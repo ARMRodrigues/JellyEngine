@@ -82,8 +82,53 @@ namespace JellyAssembly.GLFW
         //void glfwSetWindowTitle
         //void glfwSetWindowIcon
         //void glfwGetWindowPos
+
         //void glfwSetWindowPos
+        /// <summary>
+        /// Sets the position of the client area of the specified window.
+        /// </summary>
+        /// <param name="window">The window whose position to set.</param>
+        /// <param name="x">The x-coordinate of the upper-left corner of the client area.</param>
+        /// <param name="y">The y-coordinate of the upper-left corner of the client area.</param>
+        [LibraryImport(NativeHelperName.GLFWLibraryName, EntryPoint = "glfwSetWindowPos")]
+        private static partial void glfwSetWindowPos(IntPtr window, int x, int y);
+
+        /// <summary>
+        /// Sets the position of the client area of the specified window.
+        /// </summary>
+        /// <param name="window">The window whose position to set.</param>
+        /// <param name="x">The x-coordinate of the upper-left corner of the client area.</param>
+        /// <param name="y">The y-coordinate of the upper-left corner of the client area.</param>
+        public static void SetWindowPos(IntPtr window, int x, int y)
+        {
+            // Call the native GLFW function to set the window position.
+            glfwSetWindowPos(window, x, y);
+        }
+
         //void glfwGetWindowSize
+        /// <summary>
+        /// Retrieves the size of the client area of the specified window.
+        /// </summary>
+        /// <param name="window">The window whose size to retrieve.</param>
+        /// <param name="width">The width of the client area.</param>
+        /// <param name="height">The height of the client area.</param>
+        [LibraryImport(NativeHelperName.GLFWLibraryName, EntryPoint = "glfwGetWindowSize")]
+        private static partial void glfwGetWindowSize(IntPtr window, out int width, out int height);
+
+        /// <summary>
+        /// Gets the size of the client area of the specified window.
+        /// </summary>
+        /// <param name="window">The window whose size to retrieve.</param>
+        /// <returns>A tuple containing the width and height of the client area.</returns>
+        public static (int Width, int Height) GetWindowSize(IntPtr window)
+        {
+            // Call the native GLFW function to get the window size.
+            glfwGetWindowSize(window, out int width, out int height);
+
+            // Return the width and height as a tuple.
+            return (width, height);
+        }
+
         //void glfwSetWindowSizeLimits
         //void glfwSetWindowAspectRatio
         //void glfwSetWindowSize
@@ -95,8 +140,43 @@ namespace JellyAssembly.GLFW
         //void glfwIconifyWindow
         //void glfwRestoreWindow
         //void glfwMaximizeWindow
+
         //void glfwShowWindow
+        /// <summary>
+        /// Shows the specified window.
+        /// </summary>
+        /// <param name="window">The window to show.</param>
+        [LibraryImport(NativeHelperName.GLFWLibraryName, EntryPoint = "glfwShowWindow")]
+        private static partial void glfwShowWindow(IntPtr window);
+
+        /// <summary>
+        /// Shows the specified window.
+        /// </summary>
+        /// <param name="window">The window to show.</param>
+        public static void ShowWindow(IntPtr window)
+        {
+            // Call the native GLFW function to show the window.
+            glfwShowWindow(window);
+        }
+
         //void glfwHideWindow
+        /// <summary>
+        /// Hides the specified window.
+        /// </summary>
+        /// <param name="window">The window to hide.</param>
+        [LibraryImport(NativeHelperName.GLFWLibraryName, EntryPoint = "glfwHideWindow")]
+        private static partial void glfwHideWindow(IntPtr window);
+
+        /// <summary>
+        /// Hides the specified window.
+        /// </summary>
+        /// <param name="window">The window to hide.</param>
+        public static void HideWindow(IntPtr window)
+        {
+            // Call the native GLFW function to hide the window.
+            glfwHideWindow(window);
+        }
+
         //void glfwFocusWindow
         //void glfwRequestWindowAttention
         //GLFWmonitor glfwGetWindowMonitor
@@ -112,7 +192,7 @@ namespace JellyAssembly.GLFW
         //GLFWwindowfocusfun glfwSetWindowFocusCallback
         //GLFWwindowiconifyfun glfwSetWindowIconifyCallback
         //GLFWwindowmaximizefun glfwSetWindowMaximizeCallback
-        
+
         //GLFWframebuffersizefun glfwSetFramebufferSizeCallback
         [LibraryImport(NativeHelperName.GLFWLibraryName, EntryPoint = "glfwSetFramebufferSizeCallback")]
         private static partial void glfwSetFramebufferSizeCallback(IntPtr window, IntPtr callback);
@@ -127,7 +207,7 @@ namespace JellyAssembly.GLFW
             GLFWCallbacks.OnFramebufferSizeChanged += callback;
             glfwSetFramebufferSizeCallback(window, GLFWCallbacks.FramebufferSizeCallbackPointer); // Set up the native binding.
         }
-        
+
         //GLFWwindowcontentscalefun glfwSetWindowContentScaleCallback
 
         //void glfwPollEvents
