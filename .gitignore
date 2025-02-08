@@ -1,0 +1,18 @@
+# Build output
+Build/
+bin/
+obj/
+
+# Dependências geradas automaticamente
+packages/
+.vscode/
+.idea/
+*.user
+*.suo
+*.csproj.user
+
+# Cache do Rider/Visual Studio
+*.vs/
+*.cache/
+*.pidb
+*.sln.ide

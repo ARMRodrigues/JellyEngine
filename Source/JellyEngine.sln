@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runtime", "Runtime\Runtime.csproj", "{EE2216C5-1962-4218-9790-3D6B8BC1796F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JellyAssembly", "JellyAssembly\JellyAssembly.csproj", "{D972F5AD-E963-4364-8359-8AB27155E297}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JellyEngine", "JellyEngine\JellyEngine.csproj", "{134DBDC4-C40E-4054-8EB6-6C5AEE8F9291}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JellyGame", "JellyGame\JellyGame.csproj", "{8FED0D11-6860-4B50-94AF-23CE9F8E62E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE2216C5-1962-4218-9790-3D6B8BC1796F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE2216C5-1962-4218-9790-3D6B8BC1796F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE2216C5-1962-4218-9790-3D6B8BC1796F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE2216C5-1962-4218-9790-3D6B8BC1796F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D972F5AD-E963-4364-8359-8AB27155E297}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D972F5AD-E963-4364-8359-8AB27155E297}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D972F5AD-E963-4364-8359-8AB27155E297}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D972F5AD-E963-4364-8359-8AB27155E297}.Release|Any CPU.Build.0 = Release|Any CPU
+		{134DBDC4-C40E-4054-8EB6-6C5AEE8F9291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{134DBDC4-C40E-4054-8EB6-6C5AEE8F9291}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{134DBDC4-C40E-4054-8EB6-6C5AEE8F9291}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{134DBDC4-C40E-4054-8EB6-6C5AEE8F9291}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FED0D11-6860-4B50-94AF-23CE9F8E62E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FED0D11-6860-4B50-94AF-23CE9F8E62E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FED0D11-6860-4B50-94AF-23CE9F8E62E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FED0D11-6860-4B50-94AF-23CE9F8E62E4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
