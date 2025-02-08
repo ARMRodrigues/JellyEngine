@@ -2,9 +2,11 @@ namespace JellyEngine.Core.Rendering.DirectX11;
 
 public class DirectX11Renderer : Renderer
 {
+    private Window _window;
+    
     public DirectX11Renderer(Window window)
     {
-
+        _window = window;
     }
 
     public override void BeginRender()
@@ -20,5 +22,10 @@ public class DirectX11Renderer : Renderer
     public override bool IsWindowOpen()
     {
         throw new NotImplementedException();
+    }
+    
+    public override void Shutdown()
+    {
+        _window.Dispose();
     }
 }

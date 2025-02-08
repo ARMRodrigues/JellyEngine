@@ -44,4 +44,9 @@ public class OpenGLRenderer : Renderer
     {
         _window.SwapBuffers();
     }
+
+    public override void Shutdown()
+    {
+        _window.Dispose();
+    }
 }

@@ -3,10 +3,11 @@ using JellyEngine.Core.Rendering;
 
 namespace JellyEngine.Core;
 
-public class Window
+public class Window : IDisposable
 {
     private IntPtr _window;
     private GraphicsAPI _currentGraphicsAPI;
+    private bool _disposed;
 
     public IntPtr Handle => _window;
     public GraphicsAPI CurrentRendererAPI => _currentGraphicsAPI;
@@ -76,5 +77,27 @@ public class Window
         );
 
         GLFW.ShowWindow(_window);
+    }
+    
+    public void Dispose()
+    {
+        Cleanup();
+        GC.SuppressFinalize(this);
+    }
+
+    private void Cleanup()
+    {
+        if (!_disposed)
+        {            
+            GLFW.DestroyWindow(_window);
+            GLFW.Terminate();
+
+            _disposed = true;
+        }
+    }
+
+    ~Window()
+    {
+        Cleanup();
     }
 }
