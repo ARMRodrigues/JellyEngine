@@ -21,6 +21,54 @@ public class EntityManager
         return entity;
     }
     
+    public void AddChild(Entity parent, Entity child)
+    {
+        var parentTransform = GetComponent<Transform>(parent);
+        var childTransform = GetComponent<Transform>(child);
+        childTransform.ParentId = parentTransform.ParentId;
+    }
+    
+    public void AddComponent<T>(Entity entity, T component) where T : GameComponent
+    {
+        _components[entity][typeof(T)] = component;
+    }
+    
+    public T GetComponent<T>(Entity entity) where T : GameComponent
+    {
+        if (_components.TryGetValue(entity, out var components) && 
+            components.TryGetValue(typeof(T), out var component))
+        {
+            return (T)component;
+        }
+
+        throw new KeyNotFoundException($"Component {typeof(T).Name} not found for Entity {entity.Id}");
+    }
+    
+    public IEnumerable<T> GetComponents<T>() where T : GameComponent
+    {
+        foreach (var kvp in _components)
+        {
+            var components = kvp.Value;
+        
+            if (components.TryGetValue(typeof(T), out var component))
+            {
+                if (component is T typedComponent)
+                {
+                    yield return typedComponent;
+                }
+            }
+        }
+    }
+    
+    public bool TryGetComponent<T>(Entity entity, out T? component) where T : GameComponent
+    {
+        component = default;
+    
+        return _components.TryGetValue(entity, out var components) &&
+               components.TryGetValue(typeof(T), out var baseComponent) &&
+               (component = baseComponent as T) != null;
+    }
+    
     private static int GenerateUniqueId()
     {
         var timestamp = DateTime.UtcNow.Ticks;

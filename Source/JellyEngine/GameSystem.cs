@@ -2,9 +2,9 @@ namespace JellyEngine;
 
 public abstract class GameSystem
 {
-    public abstract void Initialize();
-    public abstract void Update();
-    public abstract void FixedUpdate();
-    public abstract void Render();
-    public abstract void Shutdown();
+    public void Initialize() { }
+    public virtual void Update() { }
+    public void FixedUpdate() { }
+    public void Render() { }
+    public void Shutdown() { }
 }
