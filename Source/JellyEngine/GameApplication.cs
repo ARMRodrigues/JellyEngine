@@ -1,8 +1,6 @@
-using JellyEngine.Core;
-using JellyEngine.Core.Rendering;
-using JellyEngine.Core.Rendering.DirectX11;
-using JellyEngine.Core.Rendering.OpenGL;
-using JellyEngine.Core.SceneManagement;
+using JellyEngine.Rendering;
+using JellyEngine.Rendering.DirectX11;
+using JellyEngine.Rendering.OpenGL;
 
 namespace JellyEngine;
 

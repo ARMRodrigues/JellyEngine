@@ -1,4 +1,4 @@
-namespace JellyEngine.Core.Rendering.DirectX11;
+namespace JellyEngine.Rendering.DirectX11;
 
 public class DirectX11Renderer : Renderer
 {

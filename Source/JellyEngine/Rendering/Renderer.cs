@@ -1,4 +1,4 @@
-namespace JellyEngine.Core.Rendering;
+namespace JellyEngine.Rendering;
 
 public abstract class Renderer
 {

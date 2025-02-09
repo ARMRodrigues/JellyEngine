@@ -1,4 +1,4 @@
-namespace JellyEngine.Core;
+namespace JellyEngine;
 
 public abstract class GameSystem
 {

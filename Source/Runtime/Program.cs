@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using JellyEngine;
-using JellyEngine.Core.Rendering;
+using JellyEngine.Rendering;
 using JellyGame;
 
 var gameManager = new GameManager();

@@ -1,4 +1,4 @@
-using JellyEngine.Core.SceneManagement;
+using JellyEngine;
 
 namespace JellyGame;
 

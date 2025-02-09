@@ -1,4 +1,4 @@
-namespace JellyEngine.Core.EntityManagement;
+namespace JellyEngine;
 
 public struct Entity(int id)
 {

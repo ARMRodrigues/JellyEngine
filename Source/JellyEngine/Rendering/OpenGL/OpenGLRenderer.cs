@@ -2,7 +2,7 @@ using System.Numerics;
 using JellyAssembly.GLFW;
 using JellyAssembly.OpenGL;
 
-namespace JellyEngine.Core.Rendering.OpenGL;
+namespace JellyEngine.Rendering.OpenGL;
 
 public class OpenGLRenderer : Renderer
 {

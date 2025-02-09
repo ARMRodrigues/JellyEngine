@@ -1,6 +1,4 @@
-using System;
-
-namespace JellyEngine.Core.SceneManagement;
+namespace JellyEngine;
 
 public class SceneManager
 {

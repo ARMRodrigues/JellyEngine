@@ -1,5 +1,5 @@
 using System.Numerics;
-using JellyEngine.Core.Rendering;
+using JellyEngine.Rendering;
 
 namespace JellyEngine;
 

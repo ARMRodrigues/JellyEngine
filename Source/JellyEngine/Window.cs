@@ -1,7 +1,7 @@
 using JellyAssembly.GLFW;
-using JellyEngine.Core.Rendering;
+using JellyEngine.Rendering;
 
-namespace JellyEngine.Core;
+namespace JellyEngine;
 
 public class Window : IDisposable
 {

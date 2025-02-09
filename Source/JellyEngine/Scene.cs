@@ -1,7 +1,4 @@
-using System;
-using JellyEngine.Core.EntityManagement;
-
-namespace JellyEngine.Core.SceneManagement;
+namespace JellyEngine;
 
 public class Scene(string name)
 {
