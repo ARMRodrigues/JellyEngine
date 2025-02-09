@@ -2,12 +2,14 @@ using JellyEngine.Core;
 using JellyEngine.Core.Rendering;
 using JellyEngine.Core.Rendering.DirectX11;
 using JellyEngine.Core.Rendering.OpenGL;
+using JellyEngine.Core.SceneManagement;
 
 namespace JellyEngine;
 
 public class GameApplication
 {
     private readonly RenderContext _rendererContext;
+    private readonly SceneManager _sceneManager;
 
     public GameApplication(NativeWindowSettings nativeWindowSettings)
     {
@@ -21,19 +23,30 @@ public class GameApplication
         {
             _rendererContext = new RenderContext(new DirectX11Renderer(window));
         }
+        
+        _sceneManager = new SceneManager();
     }
 
-    public void Play()
+    public void Play(Scene scene)
     {
+        _sceneManager.SetActiveScene(scene);
+        
         LifeCycle();
     }
 
     private void LifeCycle()
     {
+        _sceneManager.InitializeActiveScene();
+        
         while (_rendererContext.IsWindowOpen())
         {
             _rendererContext.BeginRender();
+            _sceneManager.UpdateActiveScene();
+            _sceneManager.FixedUpdate();
+            _sceneManager.RenderActiveScene();
             _rendererContext.EndRender();
         }
+        
+        _sceneManager.ShutdownActiveScene();
     }
 }
