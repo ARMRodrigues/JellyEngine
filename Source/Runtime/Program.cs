@@ -3,16 +3,14 @@ using JellyEngine;
 using JellyEngine.Rendering;
 using JellyGame;
 
-var gameManager = new GameManager();
-
 var nativeWindowSettings = new NativeWindowSettings
 {
-    Size = new Vector2(gameManager.GameSettings.Width, gameManager.GameSettings.Height),
-    Vsync = gameManager.GameSettings.Vsync,
-    Title = gameManager.GameName,
+    Size = new Vector2(800, 600),
+    Vsync = true,
+    Title = "Jelly Engine",
     GraphicsAPI = GraphicsAPI.OpenGL
 };
 
 var game = new GameApplication(nativeWindowSettings);
-
+var gameManager = new GameManager();
 game.Play(gameManager.GameEntryScene);

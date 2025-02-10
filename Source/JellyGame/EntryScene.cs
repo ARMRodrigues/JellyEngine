@@ -1,3 +1,4 @@
+using System.Numerics;
 using JellyEngine;
 
 namespace JellyGame;
@@ -6,8 +7,35 @@ public class EntryScene : Scene
 {
     public EntryScene(string name) : base(name)
     {
-        var testEntity = EntityManager.CreateEntity();
+        var boxTexture = new Texture("container2.png");
+        var material = new Material(boxTexture);
+
+        var cameraEntity = EntityManager.CreateEntity();
+        var armCubeEntity = EntityManager.CreateEntity();
+        var cubeEntity = EntityManager.CreateEntity();
         
-        Console.WriteLine(testEntity.Id.ToString());
+        EntityManager.AddComponent(cameraEntity, new Camera());
+        EntityManager.AddComponent(cameraEntity, new Transform
+        {
+            LocalPosition = new Vector3(0f, 0f, 10f)
+        });
+        
+        EntityManager.AddComponent(cubeEntity, new Transform());
+        EntityManager.AddComponent(cubeEntity, new MeshProcessor(MeshType.Cube, material));
+        
+        EntityManager.AddComponent(armCubeEntity, new Transform
+        {
+            LocalPosition = new Vector3(0f, 0f, -1f),
+            LocalScale = Vector3.One * 0.25f
+        });
+        EntityManager.AddComponent(armCubeEntity, new MeshProcessor(MeshType.Cube));
+        
+        EntityManager.AddChild(cubeEntity, armCubeEntity);
+        
+        AddGameSystem(new CameraSystem(EntityManager));
+        AddGameSystem(new TransformSystem(EntityManager));
+        AddGameSystem(new MeshRendererSystem(EntityManager));
+        
+        Console.WriteLine(cubeEntity.Id.ToString());
     }
 }
