@@ -69,6 +69,20 @@ public class EntityManager
                (component = baseComponent as T) != null;
     }
     
+    public IEnumerable<QueryResult<T1, T2>> Query<T1, T2>()
+        where T1 : GameComponent
+        where T2 : GameComponent
+    {
+        foreach (var (entity, components) in _components)
+        {
+            if (components.TryGetValue(typeof(T1), out var c1) &&
+                components.TryGetValue(typeof(T2), out var c2))
+            {
+                yield return new QueryResult<T1, T2>(entity, (T1)c1, (T2)c2);
+            }
+        }
+    }
+    
     private static int GenerateUniqueId()
     {
         var timestamp = DateTime.UtcNow.Ticks;
