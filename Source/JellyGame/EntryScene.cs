@@ -13,6 +13,7 @@ public class EntryScene : Scene
         var cameraEntity = EntityManager.CreateEntity();
         var armCubeEntity = EntityManager.CreateEntity();
         var cubeEntity = EntityManager.CreateEntity();
+        var spriteEntity = EntityManager.CreateEntity();
         
         EntityManager.AddComponent(cameraEntity, new Camera());
         EntityManager.AddComponent(cameraEntity, new Transform
@@ -30,11 +31,19 @@ public class EntryScene : Scene
         });
         EntityManager.AddComponent(armCubeEntity, new MeshProcessor(MeshType.Cube));
         
+        EntityManager.AddComponent(spriteEntity, new Transform()
+        {
+            LocalScale = Vector3.One * 5.0f
+        });
+        EntityManager.AddComponent(spriteEntity, new SpriteRenderer(new Sprite("Oito.png")));
+        
         EntityManager.AddChild(cubeEntity, armCubeEntity);
         
         AddGameSystem(new CameraSystem(EntityManager));
         AddGameSystem(new TransformSystem(EntityManager));
         AddGameSystem(new MeshRendererSystem(EntityManager));
+        
+        AddGameSystem(new SpriteRendererSystem(EntityManager));
         
         Console.WriteLine(cubeEntity.Id.ToString());
     }

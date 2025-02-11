@@ -19,6 +19,14 @@ public class Shader : IDisposable
 
         Initialize();
     }
+    
+    public Shader(string vertexPath, string fragmentPath)
+    {
+        VertexSource = LoadShaderFilePath(vertexPath);
+        FragmentSource = LoadShaderFilePath(fragmentPath);
+
+        Initialize();
+    }
 
     private void Initialize()
     {
