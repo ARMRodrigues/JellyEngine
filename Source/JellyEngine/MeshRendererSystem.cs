@@ -11,7 +11,7 @@ public class MeshRendererSystem(EntityManager entityManager) : GameSystem
         foreach (var (entity, transform, meshProcessor) in _entityManager.Query<Transform, MeshProcessor>())
         {
             meshProcessor.Material.Use();
-            meshProcessor.Material.SetMVP(transform.WorldMatrix, Matrix4x4.Identity, Matrix4x4.Identity);
+            meshProcessor.Material.SetMVP(transform.WorldMatrix, Camera.Main.ViewMatrix, Camera.Main.ProjectionMatrix);
             meshProcessor.Render();
         }
     }

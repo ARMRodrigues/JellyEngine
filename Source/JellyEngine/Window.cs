@@ -24,6 +24,9 @@ public class Window : IDisposable
 
         ConfigureGLFWWindowHint();
 
+        Display.WindowSize = nativeWindowSettings.Size;
+        Display.ViewportSize = nativeWindowSettings.Size;
+
         _window = GLFW.CreateWindow(
             (int)nativeWindowSettings.Size.X,
             (int)nativeWindowSettings.Size.Y,
