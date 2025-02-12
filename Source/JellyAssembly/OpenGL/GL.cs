@@ -94,6 +94,7 @@ namespace JellyAssembly.OpenGL
             LoadFunction("glViewport", out _glViewport!);
             LoadFunction("glBlendFunc", out _glBlendFunc!);
             LoadFunction("glDepthMask", out _glDepthMask!);
+            LoadFunction("glCullFace", out _glCullFace!);
         }
 
 
