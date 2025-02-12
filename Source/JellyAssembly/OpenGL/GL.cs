@@ -2,7 +2,7 @@
 
 namespace JellyAssembly.OpenGL
 {
-    #pragma warning disable CS8618
+#pragma warning disable CS8618
     public partial class GL
     {
         // Singleton instance
@@ -73,6 +73,7 @@ namespace JellyAssembly.OpenGL
             LoadFunction("glUniformMatrix4fv", out _glUniformMatrix4fv!);
             LoadFunction("glDrawElements", out _glDrawElements!);
             LoadFunction("glEnable", out _glEnable!);
+            LoadFunction("glDisable", out _glDisable!);
             LoadFunction("glDepthFunc", out _glDepthFunc!);
             LoadFunction("glBindFramebuffer", out _glBindFramebuffer!);
             LoadFunction("glGenFramebuffers", out _glGenFramebuffers!);
@@ -91,8 +92,10 @@ namespace JellyAssembly.OpenGL
             LoadFunction("glDeleteTextures", out _glDeleteTextures!);
             LoadFunction("glDeleteRenderbuffers", out _glDeleteRenderbuffers!);
             LoadFunction("glViewport", out _glViewport!);
+            LoadFunction("glBlendFunc", out _glBlendFunc!);
+            LoadFunction("glDepthMask", out _glDepthMask!);
         }
-    
+
 
         // Generalized function loader
         private void LoadFunction<T>(string name, out T field) where T : Delegate
@@ -124,6 +127,19 @@ namespace JellyAssembly.OpenGL
         public static void Enable(EnableCap cap)
         {
             _glEnable((uint)cap);
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void glDisable_d(uint cap);
+        private static glDisable_d _glDisable;
+
+        /// <summary>
+        /// Disable server-side GL capabilities.
+        /// </summary>
+        /// <param name="cap">Specifies a symbolic constant indicating a GL capability.</param>
+        public static void Disable(EnableCap cap)
+        {
+            _glDisable((uint)cap);
         }
     }
 }

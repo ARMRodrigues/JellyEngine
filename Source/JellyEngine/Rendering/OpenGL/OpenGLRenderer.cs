@@ -25,8 +25,9 @@ public class OpenGLRenderer : Renderer
 
         GL.ClearColor(0.478f, 0.173f, 0.741f, 1.0f);
 
-        GL.Enable(EnableCap.DepthTest);
         GL.Enable(EnableCap.CullFace);
+        GL.Enable(EnableCap.DepthTest);
+        GL.DepthFunc(DepthFunction.Lequal);
 
         _window.CenterWindow();
     }
