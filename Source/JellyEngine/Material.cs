@@ -17,12 +17,16 @@ public class Material : IDisposable
     private readonly int _lightDiffuseLocation;
     private readonly int _lightSpecularLocation;
 
+    public bool HasTransparency { get; private set; } = false;
+    public bool HasTexture { get; private set; } = false;
+
     public Texture Albedo
     {
         get => _albedoTexture;
         set
         {
             _albedoTexture = value;
+            HasTexture = true;
         }
     }
 
@@ -30,7 +34,7 @@ public class Material : IDisposable
     {
         _shader = new Shader();
 
-        _albedoTexture = new Texture();
+        Albedo = new Texture();
 
         _modelLocation = _shader.GetUniformLocation("model");
         _viewLocation = _shader.GetUniformLocation("view");
@@ -44,7 +48,7 @@ public class Material : IDisposable
     {
         _shader = new Shader();
 
-        _albedoTexture = albedo;
+        Albedo = albedo;
 
         _modelLocation = _shader.GetUniformLocation("model");
         _viewLocation = _shader.GetUniformLocation("view");
@@ -59,6 +63,12 @@ public class Material : IDisposable
         _albedoTexture.Bind();
 
         _shader.Use();
+    }
+
+    public void Unbind()
+    {
+        _albedoTexture.Unbind();
+        _shader.Unbind();
     }
 
     public void SetMVP(Matrix4x4 model, Matrix4x4 view, Matrix4x4 projection)

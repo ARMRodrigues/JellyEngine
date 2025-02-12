@@ -72,8 +72,12 @@ public class Shader : IDisposable
 
     public void Use()
     {
-
         GL.UseProgram(ShaderProgram);
+    }
+
+    public void Unbind()
+    {
+        GL.UseProgram(0);
     }
 
     public int GetUniformLocation(string uniformName)

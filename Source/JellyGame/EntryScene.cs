@@ -36,9 +36,10 @@ public class EntryScene : Scene
         
         EntityManager.AddComponent(spriteEntity, new Transform()
         {
-            LocalScale = Vector3.One * 3.0f
+            LocalPosition = new Vector3(0.5f, 0f, 0f),
+            LocalScale = Vector3.One * 1.0f
         });
-        EntityManager.AddComponent(spriteEntity, new SpriteRenderer(new Sprite("Icon1.png")));
+        EntityManager.AddComponent(spriteEntity, new SpriteRenderer(new Sprite("Oito.png")));
         
         EntityManager.AddChild(cubeEntity, armCubeEntity);
         

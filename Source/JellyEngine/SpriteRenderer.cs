@@ -68,6 +68,11 @@ public class SpriteRenderer : GameComponent, IDisposable
     
     public void Render()
     {
+        GL.DepthMask(false);
+        GL.DepthFunc(DepthFunction.Always);
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+        
         _sprite.Texture.Bind();
         
         GL.BindVertexArray(_vao);
@@ -75,6 +80,10 @@ public class SpriteRenderer : GameComponent, IDisposable
         GL.BindVertexArray(0);
         
         _sprite.Texture.Unbind();
+        
+        GL.DepthMask(true);
+        GL.DepthFunc(DepthFunction.Lequal);
+        GL.Disable(EnableCap.Blend);
     }
 
     public void Dispose()

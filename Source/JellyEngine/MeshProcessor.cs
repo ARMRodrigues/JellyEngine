@@ -67,12 +67,40 @@ public class MeshProcessor : GameComponent, IDisposable
         GL.BindVertexArray(0);
     }
 
+    public void BeginRender()
+    {
+        GL.Enable(EnableCap.DepthTest);
+        GL.DepthFunc(DepthFunction.Lequal);
+        
+        GL.Enable(EnableCap.CullFace);
+        GL.CullFace(CullFaceMode.Back);
+
+        if (Material.HasTransparency)
+        {
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+        }
+        
+        Material.Use();
+    }
+
+    private void EndRender()
+    {
+        Material.Unbind();
+
+        if (Material.HasTransparency)
+            GL.Disable(EnableCap.Blend);
+    }
+
     public void Render()
     {
+        BeginRender();
+        
         GL.BindVertexArray(_vao);
-        //GL.DrawArrays(PrimitiveType.Triangles, 0, 3);
         GL.DrawElements(PrimitiveType.Triangles, _indicesSize, DrawElementsType.UnsignedInt, 0);
         GL.BindVertexArray(0);
+        
+        EndRender();
     }
 
     public void Dispose()
