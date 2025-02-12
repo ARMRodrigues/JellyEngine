@@ -16,13 +16,16 @@ public class Camera : GameComponent
     public float FieldOfView { get; set; }
     public float NearPlane { get; set; }
     public float FarPlane { get; set; }
+    public int OrthographicSize { get; set; }
     public CameraType Type { get; set; }
     
-    public Camera()
+    public Camera(CameraType type)
     {
         FieldOfView = 60f;
         NearPlane = 0.03f;
         FarPlane = 100f;
+        OrthographicSize = 5;
+        Type = type;
         Main = this;
     }
 }

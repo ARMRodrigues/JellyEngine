@@ -12,12 +12,30 @@ public class CameraSystem (EntityManager entityManager) : GameSystem
         {
             camera.ViewMatrix = GetViewMatrix(transform);
 
-            camera.ProjectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView(
-                MathUtils.ToRadians(camera.FieldOfView),
-                Display.ViewportSize.X / Display.ViewportSize.Y,
-                camera.NearPlane,
-                camera.FarPlane
-            );
+            if (camera.Type == CameraType.Perspective)
+            {
+                camera.ProjectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView(
+                    MathUtils.ToRadians(camera.FieldOfView),
+                    Display.ViewportSize.X / Display.ViewportSize.Y,
+                    camera.NearPlane,
+                    camera.FarPlane
+                );
+            }
+            else
+            {
+                var aspectRation = Display.ViewportSize.X / Display.ViewportSize.Y;
+                var left = -camera.OrthographicSize * aspectRation;
+                var right = camera.OrthographicSize * aspectRation;
+                var bottom = -camera.OrthographicSize;
+                var top = camera.OrthographicSize;
+                camera.ProjectionMatrix = Matrix4x4.CreateOrthographicOffCenter
+                (
+                    left, right, bottom, top, 
+                    camera.NearPlane,camera.FarPlane
+                );
+            }
+
+            
         }
     }
     
