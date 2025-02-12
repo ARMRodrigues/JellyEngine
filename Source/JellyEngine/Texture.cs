@@ -28,8 +28,6 @@ public class Texture
     {
         _textureId = GL.GenTexture();
         
-        Console.WriteLine($"Loading texture {_textureId}");
-        
         GL.BindTexture(TextureTarget.Texture2D, _textureId);
         
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
@@ -54,7 +52,7 @@ public class Texture
         else
         {
             //Logger.Error("String is empty");
-            using (var image = new Image<Rgba32>(2, 2, Color.WhiteSmoke))
+            using (var image = new Image<Rgba32>(64, 64, Color.WhiteSmoke))
             { // Save the image to a file image.Save("empty_red_image.png");
                 Width = image.Width;
                 Height = image.Height;

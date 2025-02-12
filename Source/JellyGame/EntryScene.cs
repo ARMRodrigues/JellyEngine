@@ -15,13 +15,16 @@ public class EntryScene : Scene
         var cubeEntity = EntityManager.CreateEntity();
         var spriteEntity = EntityManager.CreateEntity();
         
-        EntityManager.AddComponent(cameraEntity, new Camera());
+        EntityManager.AddComponent(cameraEntity, new Camera(CameraType.Perspective));
         EntityManager.AddComponent(cameraEntity, new Transform
         {
             LocalPosition = new Vector3(0f, 0f, 10f)
         });
         
-        EntityManager.AddComponent(cubeEntity, new Transform());
+        EntityManager.AddComponent(cubeEntity, new Transform()
+        {
+            LocalPosition = new Vector3(0f, 0f, -0.55f)
+        });
         EntityManager.AddComponent(cubeEntity, new MeshProcessor(MeshType.Cube, material));
         
         EntityManager.AddComponent(armCubeEntity, new Transform
@@ -33,9 +36,9 @@ public class EntryScene : Scene
         
         EntityManager.AddComponent(spriteEntity, new Transform()
         {
-            LocalScale = Vector3.One * 5.0f
+            LocalScale = Vector3.One * 3.0f
         });
-        EntityManager.AddComponent(spriteEntity, new SpriteRenderer(new Sprite("Oito.png")));
+        EntityManager.AddComponent(spriteEntity, new SpriteRenderer(new Sprite("Icon1.png")));
         
         EntityManager.AddChild(cubeEntity, armCubeEntity);
         

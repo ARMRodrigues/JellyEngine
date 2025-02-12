@@ -6,7 +6,7 @@ namespace JellyEngine.Rendering.OpenGL;
 
 public class OpenGLRenderer : Renderer
 {
-    private Window _window;
+    private readonly Window _window;
 
     public OpenGLRenderer(Window window)
     {
@@ -26,6 +26,7 @@ public class OpenGLRenderer : Renderer
         GL.ClearColor(0.478f, 0.173f, 0.741f, 1.0f);
 
         GL.Enable(EnableCap.DepthTest);
+        GL.Enable(EnableCap.CullFace);
 
         _window.CenterWindow();
     }
