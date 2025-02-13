@@ -65,25 +65,35 @@ public class SpriteRenderer : GameComponent, IDisposable
         GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, stride, 3 * sizeof(float));
         GL.EnableVertexAttribArray(1);
     }
+
+    public void BeginRender()
+    {
+        GL.Enable(EnableCap.Blend);
+        //GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+        GL.BlendFuncSeparate(
+            BlendingFactorSrc.SrcAlpha,
+            BlendingFactorDest.OneMinusSrcAlpha,
+            BlendingFactorSrc.One,
+            BlendingFactorDest.OneMinusSrcAlpha
+        );
+        GL.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
+        GL.DepthFunc(DepthFunction.Always);
+        GL.DepthMask(false);
+    }
     
     public void Render()
     {
-        GL.DepthMask(false);
-        GL.DepthFunc(DepthFunction.Always);
-        GL.Enable(EnableCap.Blend);
-        GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-        
         _sprite.Texture.Bind();
         
         GL.BindVertexArray(_vao);
         GL.DrawElements(PrimitiveType.Triangles, _indicesSize, DrawElementsType.UnsignedInt, 0);
-        GL.BindVertexArray(0);
+        //GL.BindVertexArray(0);
         
-        _sprite.Texture.Unbind();
+        //_sprite.Texture.Unbind();
         
-        GL.DepthMask(true);
-        GL.DepthFunc(DepthFunction.Lequal);
-        GL.Disable(EnableCap.Blend);
+        //GL.DepthMask(true);
+        //GL.DepthFunc(DepthFunction.Lequal);
+        //GL.Disable(EnableCap.Blend);
     }
 
     public void Dispose()

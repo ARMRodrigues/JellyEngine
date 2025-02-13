@@ -100,7 +100,7 @@ public class MeshProcessor : GameComponent, IDisposable
         GL.DrawElements(PrimitiveType.Triangles, _indicesSize, DrawElementsType.UnsignedInt, 0);
         GL.BindVertexArray(0);
         
-        EndRender();
+        //EndRender();
     }
 
     public void Dispose()

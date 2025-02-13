@@ -27,7 +27,7 @@ public class OpenGLRenderer : Renderer
 
         GL.Enable(EnableCap.CullFace);
         GL.Enable(EnableCap.DepthTest);
-        GL.DepthFunc(DepthFunction.Lequal);
+        //GL.DepthFunc(DepthFunction.Lequal);
 
         _window.CenterWindow();
     }
