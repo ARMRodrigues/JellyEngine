@@ -14,11 +14,16 @@ public class EntryScene : Scene
         var armCubeEntity = EntityManager.CreateEntity();
         var cubeEntity = EntityManager.CreateEntity();
         var spriteEntity = EntityManager.CreateEntity();
+        var anotherSpriteEntity = EntityManager.CreateEntity();
+        var justanotherSpriteEntity = EntityManager.CreateEntity();
         
-        EntityManager.AddComponent(cameraEntity, new Camera(CameraType.Perspective));
+        EntityManager.AddComponent(cameraEntity, new Camera(CameraType.Orthographic)
+        {
+            OrthographicSize = 3
+        });
         EntityManager.AddComponent(cameraEntity, new Transform
         {
-            LocalPosition = new Vector3(0f, 0f, 10f)
+            LocalPosition = new Vector3(0f, 0f, 15)
         });
         
         EntityManager.AddComponent(cubeEntity, new Transform()
@@ -34,12 +39,32 @@ public class EntryScene : Scene
         });
         EntityManager.AddComponent(armCubeEntity, new MeshProcessor(MeshType.Cube));
         
+        // Sprites debug
         EntityManager.AddComponent(spriteEntity, new Transform()
         {
-            LocalPosition = new Vector3(0.5f, 0f, 0f),
             LocalScale = Vector3.One * 1.0f
         });
-        EntityManager.AddComponent(spriteEntity, new SpriteRenderer(new Sprite("Oito.png")));
+        EntityManager.AddComponent(spriteEntity, new SpriteRenderer(new Sprite("Icon1.png")));
+
+        EntityManager.AddComponent(anotherSpriteEntity, new Transform()
+        {
+            LocalPosition = new Vector3(-0.5f, 0f, -1f),
+            LocalScale = Vector3.One * 1.0f
+        });
+        EntityManager.AddComponent(anotherSpriteEntity, new SpriteRenderer(new Sprite("Icon1.png")
+        {
+            Color = new Color(0.6f, 0, 0)
+        }));
+
+        EntityManager.AddComponent(justanotherSpriteEntity, new Transform()
+        {
+            LocalPosition = new Vector3(0.5f, 0f, 1f),
+            LocalScale = Vector3.One * 1.0f
+        });
+        EntityManager.AddComponent(justanotherSpriteEntity, new SpriteRenderer(new Sprite("Icon1.png")
+        {
+            Color = new Color(0, 0.3f, 0)
+        }));
         
         EntityManager.AddChild(cubeEntity, armCubeEntity);
         

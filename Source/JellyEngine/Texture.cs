@@ -52,7 +52,7 @@ public class Texture
         else
         {
             //Logger.Error("String is empty");
-            using (var image = new Image<Rgba32>(64, 64, Color.WhiteSmoke))
+            using (var image = new Image<Rgba32>(64, 64, SixLabors.ImageSharp.Color.WhiteSmoke))
             { // Save the image to a file image.Save("empty_red_image.png");
                 Width = image.Width;
                 Height = image.Height;

@@ -9,6 +9,7 @@ public class Sprite
     public Vector2 Size => new(Texture.Width, Texture.Height);
     public bool HorizontalFlip { get; set; }
     public bool VerticalFlip { get; set; }
+    public Color Color { get; set; } = Color.White;
 
     public Sprite()
     {

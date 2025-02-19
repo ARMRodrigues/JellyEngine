@@ -11,13 +11,16 @@ public class SpriteRenderer : GameComponent, IDisposable
     private uint _ebo;
     private int _indicesSize;
     private bool _disposed = false;
-    
+
     public SpriteMaterial Material { get; }
-    
+
+    public Color Color => _sprite.Color;
+
     public SpriteRenderer(Sprite sprite)
     {
         _sprite = sprite;
         Material = new SpriteMaterial();
+
         Initialize();
     }
 
@@ -25,10 +28,10 @@ public class SpriteRenderer : GameComponent, IDisposable
     {
         var size = _sprite.Size;
         var pixelsPerUnit = _sprite.PixelsPerUnit;
-        CreateQuad((size.X/2f) / pixelsPerUnit, 
-        (size.Y/2f) / pixelsPerUnit);
+        CreateQuad((size.X / 2f) / pixelsPerUnit,
+        (size.Y / 2f) / pixelsPerUnit);
     }
-    
+
     private void CreateQuad(float width, float height)
     {
         float[] vertices =
@@ -65,25 +68,27 @@ public class SpriteRenderer : GameComponent, IDisposable
         GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, stride, 3 * sizeof(float));
         GL.EnableVertexAttribArray(1);
     }
-    
+
+    public void PrepareRender()
+    {
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFuncSeparate(
+            BlendingFactorSrc.SrcAlpha,
+            BlendingFactorDest.OneMinusSrcAlpha,
+            BlendingFactorSrc.One,
+            BlendingFactorDest.OneMinusSrcAlpha
+        );
+        GL.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
+        GL.DepthFunc(DepthFunction.Always);
+        GL.DepthMask(true);
+        GL.Disable(EnableCap.CullFace);
+        _sprite.Texture.Bind();
+    }
+
     public void Render()
     {
-        GL.DepthMask(false);
-        GL.DepthFunc(DepthFunction.Always);
-        GL.Enable(EnableCap.Blend);
-        GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-        
-        _sprite.Texture.Bind();
-        
         GL.BindVertexArray(_vao);
         GL.DrawElements(PrimitiveType.Triangles, _indicesSize, DrawElementsType.UnsignedInt, 0);
-        GL.BindVertexArray(0);
-        
-        _sprite.Texture.Unbind();
-        
-        GL.DepthMask(true);
-        GL.DepthFunc(DepthFunction.Lequal);
-        GL.Disable(EnableCap.Blend);
     }
 
     public void Dispose()

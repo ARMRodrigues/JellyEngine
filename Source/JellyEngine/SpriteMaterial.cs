@@ -8,6 +8,7 @@ public class SpriteMaterial : IDisposable
     private readonly int _modelLocation;
     private readonly int _viewLocation;
     private readonly int _projectionLocation;
+    private readonly int _colorLocation;
     private bool _disposed;
 
     public SpriteMaterial()
@@ -17,6 +18,7 @@ public class SpriteMaterial : IDisposable
         _modelLocation = _shader.GetUniformLocation("model");
         _viewLocation = _shader.GetUniformLocation("view");
         _projectionLocation = _shader.GetUniformLocation("projection");
+        _colorLocation = _shader.GetUniformLocation("color");
     }
     
     public void Use()
@@ -29,6 +31,11 @@ public class SpriteMaterial : IDisposable
         _shader.SetMatrix4(_modelLocation, model);
         _shader.SetMatrix4(_viewLocation, view);
         _shader.SetMatrix4(_projectionLocation, projection);
+    }
+
+    public void SetColor(Color color)
+    {
+        _shader.SetVector3(_colorLocation, color.ToVector3());
     }
 
     public void Dispose()
