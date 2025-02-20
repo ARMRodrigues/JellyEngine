@@ -1,4 +1,5 @@
 using JellyAssembly.GLFW;
+using JellyEngine.InputManagement;
 using JellyEngine.Rendering;
 
 namespace JellyEngine;
@@ -37,6 +38,8 @@ public class Window : IDisposable
         GLFW.MakeContextCurrent(_window);
 
         GLFW.SwapInterval(nativeWindowSettings.Vsync ? 1 : 0);
+        
+        InputBackend.InitializeCallbacks(_window);
     }
 
     public bool IsWindowOpen()

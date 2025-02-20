@@ -1,3 +1,4 @@
+using JellyEngine.InputManagement;
 using JellyEngine.Rendering;
 using JellyEngine.Rendering.DirectX11;
 using JellyEngine.Rendering.OpenGL;
@@ -8,6 +9,7 @@ public class GameApplication
 {
     private readonly RenderContext _rendererContext;
     private readonly SceneManager _sceneManager;
+    private readonly InputSystemManager _inputSystemManager;
 
     public GameApplication(NativeWindowSettings nativeWindowSettings)
     {
@@ -23,6 +25,7 @@ public class GameApplication
         }
         
         _sceneManager = new SceneManager();
+        _inputSystemManager = InputSystemManager.Instance;
     }
 
     public void Play(Scene scene)
@@ -38,11 +41,13 @@ public class GameApplication
         
         while (_rendererContext.IsWindowOpen())
         {
+            _inputSystemManager.UpdateInputStates(InputBackend.GetKeyboardState(), InputBackend.GetMouseState());
             _rendererContext.BeginRender();
             _sceneManager.UpdateActiveScene();
             _sceneManager.FixedUpdate();
             _sceneManager.RenderActiveScene();
             _rendererContext.EndRender();
+            _inputSystemManager.ResetState();
         }
         
         _sceneManager.ShutdownActiveScene();

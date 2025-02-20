@@ -1,5 +1,6 @@
 using System.Numerics;
 using JellyEngine;
+using JellyEngine.InputManagement;
 
 namespace JellyGame;
 
@@ -71,9 +72,15 @@ public class EntryScene : Scene
         AddGameSystem(new CameraSystem(EntityManager));
         AddGameSystem(new TransformSystem(EntityManager));
         AddGameSystem(new MeshRendererSystem(EntityManager));
+        AddGameSystem(new ScriptTest());
         
         AddGameSystem(new SpriteRendererSystem(EntityManager));
         
-        Console.WriteLine(cubeEntity.Id.ToString());
+        Input.RegisterAction(new InputAction("Jump") { Keys = { KeyCode.Space } });
+        Input.RegisterAction(new InputAction("MoveForward") { Keys = { KeyCode.W } });
+        Input.RegisterAction(new InputAction("MoveLeft") { Keys = { KeyCode.D } });
+        Input.RegisterAction(new InputAction("MoveBackward") { Keys = { KeyCode.S } });
+        Input.RegisterAction(new InputAction("MoveRight") { Keys = { KeyCode.A } });
+        Input.RegisterAction(new InputAction("Fire") { MouseButtons = {MouseButton.Right} });
     }
 }
