@@ -1,4 +1,5 @@
 using JellyEngine;
+using JellyGame.Scenes.Terrain;
 
 namespace JellyGame;
 
@@ -19,7 +20,7 @@ public class GameManager
             FullScreen = false,
             Vsync = true
         };
-        
-        GameEntryScene = new EntryScene("EntryScene");
+
+        GameEntryScene = new IslandWorldScene("IslandWorldScene");
     }
 }

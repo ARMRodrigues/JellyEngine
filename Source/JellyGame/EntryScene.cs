@@ -1,6 +1,7 @@
 using System.Numerics;
 using JellyEngine;
 using JellyEngine.InputManagement;
+using JellyGame.Scripts;
 
 namespace JellyGame;
 
@@ -14,34 +15,42 @@ public class EntryScene : Scene
         var cameraEntity = EntityManager.CreateEntity();
         var armCubeEntity = EntityManager.CreateEntity();
         var cubeEntity = EntityManager.CreateEntity();
+        var anotherCubeEntity = EntityManager.CreateEntity();
         var spriteEntity = EntityManager.CreateEntity();
         var anotherSpriteEntity = EntityManager.CreateEntity();
         var justanotherSpriteEntity = EntityManager.CreateEntity();
         
-        EntityManager.AddComponent(cameraEntity, new Camera(CameraType.Orthographic)
+        EntityManager.AddComponent(cameraEntity, new Camera(CameraType.Perspective)
         {
             OrthographicSize = 3
         });
         EntityManager.AddComponent(cameraEntity, new Transform
         {
-            LocalPosition = new Vector3(0f, 0f, 15)
+            LocalPosition = new Vector3(0f, 0f, 10)
         });
         
         EntityManager.AddComponent(cubeEntity, new Transform()
         {
-            LocalPosition = new Vector3(0f, 0f, -0.55f)
+            LocalPosition = new Vector3(0f, 0f, 0)
         });
         EntityManager.AddComponent(cubeEntity, new MeshProcessor(MeshType.Cube, material));
+        EntityManager.AddComponent(cubeEntity, new LookAtObject() { Target = new Vector3(3, 3, 0)});
+        
+        EntityManager.AddComponent(anotherCubeEntity, new Transform()
+        {
+            LocalPosition = new Vector3(3f, 3f, 0f)
+        });
+        EntityManager.AddComponent(anotherCubeEntity, new MeshProcessor(MeshType.Cube, material));
         
         EntityManager.AddComponent(armCubeEntity, new Transform
         {
             LocalPosition = new Vector3(0f, 0f, -1f),
-            LocalScale = Vector3.One * 0.25f
+            LocalScale = new Vector3(0.5f, 0.5f, 1.0f)
         });
         EntityManager.AddComponent(armCubeEntity, new MeshProcessor(MeshType.Cube));
         
         // Sprites debug
-        EntityManager.AddComponent(spriteEntity, new Transform()
+        /*EntityManager.AddComponent(spriteEntity, new Transform()
         {
             LocalScale = Vector3.One * 1.0f
         });
@@ -65,7 +74,7 @@ public class EntryScene : Scene
         EntityManager.AddComponent(justanotherSpriteEntity, new SpriteRenderer(new Sprite("Icon1.png")
         {
             Color = new Color(0, 0.3f, 0)
-        }));
+        }));*/
         
         EntityManager.AddChild(cubeEntity, armCubeEntity);
         
@@ -75,6 +84,10 @@ public class EntryScene : Scene
         AddGameSystem(new ScriptTest());
         
         AddGameSystem(new SpriteRendererSystem(EntityManager));
+        
+        AddGameSystem(new LookAtObjectSystem(EntityManager));
+        
+        AddGameSystem(new FreeCameraControllerSystem(EntityManager));
         
         Input.RegisterAction(new InputAction("Jump") { Keys = { KeyCode.Space } });
         Input.RegisterAction(new InputAction("MoveForward") { Keys = { KeyCode.W } });
