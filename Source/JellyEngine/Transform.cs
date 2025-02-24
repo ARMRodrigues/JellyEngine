@@ -81,6 +81,19 @@ public class Transform : GameComponent
         LocalScale = Vector3.One;
         WorldMatrix = LocalMatrix;
     }
+
+    public void LookAt(Vector3 targetPosition, Vector3 worldUp)
+    {
+        var direction = Vector3.Normalize(targetPosition - Position);
+        
+        if (direction == Vector3.Zero)
+            direction = -Vector3.UnitZ;
+        
+        var viewMatrix = Matrix4x4.CreateLookAt(Position, targetPosition, worldUp);
+        
+        LocalRotation = Quaternion.CreateFromRotationMatrix(Matrix4x4.Transpose(viewMatrix));
+    }
+
     
     // Helper functions
     public static Vector3 RotationToEulerAngles(Quaternion q)
