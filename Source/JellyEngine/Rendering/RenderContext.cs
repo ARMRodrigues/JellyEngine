@@ -23,4 +23,9 @@ public class RenderContext
     {
         _renderer.EndRender();
     }
+
+    public void PollEvents()
+    {
+        _renderer.PollEvents();
+    }
 }

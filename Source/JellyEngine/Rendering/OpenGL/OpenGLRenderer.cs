@@ -47,6 +47,11 @@ public class OpenGLRenderer : Renderer
         _window.SwapBuffers();
     }
 
+    public override void PollEvents()
+    {
+        _window.PollEvents();
+    }
+
     public override void Shutdown()
     {
         _window.Dispose();

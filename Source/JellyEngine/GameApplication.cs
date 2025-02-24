@@ -48,6 +48,7 @@ public class GameApplication
             _sceneManager.RenderActiveScene();
             _rendererContext.EndRender();
             _inputSystemManager.ResetState();
+            _rendererContext.PollEvents();
         }
         
         _sceneManager.ShutdownActiveScene();

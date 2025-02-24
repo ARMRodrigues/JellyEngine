@@ -4,6 +4,10 @@ namespace JellyEngine.InputManagement;
 
 public class Input
 {
+    public static bool SetCursorMode
+    {
+        set => InputBackend.SetCursor(value);
+    }
     public static Vector2 MousePosition => InputSystemManager.Instance.MousePosition;
     public static Vector2 DeltaMousePosition => InputSystemManager.Instance.DeltaMousePosition;
 

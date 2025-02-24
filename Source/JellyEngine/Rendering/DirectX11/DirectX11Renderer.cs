@@ -19,6 +19,11 @@ public class DirectX11Renderer : Renderer
         throw new NotImplementedException();
     }
 
+    public override void PollEvents()
+    {
+        throw new NotImplementedException();
+    }
+
     public override bool IsWindowOpen()
     {
         throw new NotImplementedException();

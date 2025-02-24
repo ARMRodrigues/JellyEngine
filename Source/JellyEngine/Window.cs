@@ -64,6 +64,10 @@ public class Window : IDisposable
     public void SwapBuffers()
     {
         GLFW.SwapBuffers(_window);
+    }
+
+    public void PollEvents()
+    {
         GLFW.PollEvents();
     }
 
