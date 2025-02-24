@@ -10,8 +10,7 @@ public class Transform : GameComponent
     private Quaternion _rotation;
     private Matrix4x4 _localMatrix;
     private Matrix4x4 _worldMatrix;
-
-    public int ParentId { get; set; }
+    
     public Vector3 LocalPosition
     {
         get => _localPosition;

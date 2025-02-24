@@ -1,5 +1,20 @@
 ﻿namespace JellyEngine;
 
+public struct QueryResult<T>
+{
+    public Entity Entity { get; }
+    public T Component { get; }
+
+    public QueryResult(Entity entity, T component)
+    {
+        Entity = entity;
+        Component = component;
+    }
+
+    public void Deconstruct(out T component) => component = Component;
+    public void Deconstruct(out Entity entity, out T component) => (entity, component) = (Entity, Component);
+}
+
 public struct QueryResult<T1, T2>
 {
     public Entity Entity { get; }

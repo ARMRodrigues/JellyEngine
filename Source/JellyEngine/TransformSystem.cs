@@ -1,4 +1,6 @@
-﻿namespace JellyEngine;
+﻿using System.Numerics;
+
+namespace JellyEngine;
 
 public class TransformSystem (EntityManager entityManager) : GameSystem
 {
@@ -8,16 +10,18 @@ public class TransformSystem (EntityManager entityManager) : GameSystem
     {
         foreach (var transform in _entityManager.GetComponents<Transform>())
         {
-            if (_entityManager.TryGetComponent(new Entity(transform.ParentId), out Transform? parentTransform) && 
-                parentTransform != null)
+            transform.WorldMatrix = transform.LocalMatrix;
+        }
+        
+        foreach (var (entity, transform) in _entityManager.Query<Transform>())
+        {
+            if (!_entityManager.TryGetComponent(entity, out Hierarchy? children)) continue;
+            
+            foreach (var childId in children.ChildrenId)
             {
-                transform.WorldMatrix = transform.LocalMatrix * parentTransform.WorldMatrix;
+                var childTransform = _entityManager.GetComponent<Transform>(new Entity(childId));
+                childTransform.WorldMatrix = childTransform.LocalMatrix * transform.WorldMatrix;
             }
-            else
-            {
-                transform.WorldMatrix = transform.LocalMatrix;
-            }
-
         }
     }
 }

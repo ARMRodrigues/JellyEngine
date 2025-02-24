@@ -23,9 +23,20 @@ public class EntityManager
     
     public void AddChild(Entity parent, Entity child)
     {
-        var parentTransform = GetComponent<Transform>(parent);
-        var childTransform = GetComponent<Transform>(child);
-        childTransform.ParentId = parentTransform.ParentId;
+        TryGetComponent(parent, out Hierarchy? childrenComponent);
+
+        if (childrenComponent == null)
+        {
+            AddComponent(parent, new Hierarchy()
+            {
+                ParentId = parent.Id,
+                ChildrenId = [child.Id]
+            });
+        }
+        else
+        {
+            childrenComponent.ChildrenId.Add(child.Id);
+        }
     }
     
     public void AddComponent<T>(Entity entity, T component) where T : GameComponent
@@ -67,6 +78,18 @@ public class EntityManager
         return _components.TryGetValue(entity, out var components) &&
                components.TryGetValue(typeof(T), out var baseComponent) &&
                (component = baseComponent as T) != null;
+    }
+    
+    public IEnumerable<QueryResult<T>> Query<T>()
+        where T : GameComponent
+    {
+        foreach (var (entity, components) in _components)
+        {
+            if (components.TryGetValue(typeof(T), out var component))
+            {
+                yield return new QueryResult<T>(entity, (T)component);
+            }
+        }
     }
     
     public IEnumerable<QueryResult<T1, T2>> Query<T1, T2>()
