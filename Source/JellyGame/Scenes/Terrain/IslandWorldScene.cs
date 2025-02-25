@@ -35,18 +35,19 @@ public class IslandWorldScene : Scene
         EntityManager.AddChild(referenceEntity, ZreferenceEntity);
         
         var islandGenerator = new IslandGenerator();
-        var mesh = islandGenerator.GenerateMeshV2();
+        var mesh = islandGenerator.GenerateTopMesh();
         var terrainEntity = EntityManager.CreateEntity();
         var uvTexture = new Texture("uv.png");
+        var uvTexture2 = new Texture();
         EntityManager.AddComponent(terrainEntity, new Transform());
-        EntityManager.AddComponent(terrainEntity, new MeshProcessor(mesh, new Material(uvTexture)));
+        EntityManager.AddComponent(terrainEntity, new MeshProcessor(mesh, new Material(uvTexture2)));
         
         var borderMesh = islandGenerator.GenerateBorderMesh();
         var edgeterrainEntity = EntityManager.CreateEntity();
         EntityManager.AddComponent(edgeterrainEntity, new Transform());
         EntityManager.AddComponent(edgeterrainEntity, new MeshProcessor(borderMesh, new Material(uvTexture)));
 
-        var bottomMesh = islandGenerator.GenerateMirrorMesh();
+        var bottomMesh = islandGenerator.GenerateBottomMesh();
         var bottomMeshEntity = EntityManager.CreateEntity();
         EntityManager.AddComponent(bottomMeshEntity, new Transform());
         EntityManager.AddComponent(bottomMeshEntity, new MeshProcessor(bottomMesh, new Material(uvTexture)));

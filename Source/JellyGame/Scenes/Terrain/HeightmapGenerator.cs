@@ -34,12 +34,27 @@ public class HeightmapGenerator
 
     public void GenerateHeightmap()
     {
+        FastNoiseLite detailNoise = new FastNoiseLite();
+        detailNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+        detailNoise.SetFrequency(-0.020f);
+        detailNoise.SetFractalType(FastNoiseLite.FractalType.None);
+        detailNoise.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.EuclideanSq);
+        detailNoise.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2);
+        detailNoise.SetDomainWarpAmp(70);
+        detailNoise.SetFractalOctaves(4);
+
+        //float detailHeight = detailNoise.GetNoise(x * 0.3f, z * 0.3f) * 2f; 
+
+        var scale = 0.02f;
+
         for (int z = 0; z < _size; z++)
         {
             for (int x = 0; x < _size; x++)
             {
-                var y = _noise.GetNoise(x, z);
-                HeightMap[x, z] = y;
+                float baseHeight = _noise.GetNoise(x, z);
+                //float detailHeight = detailNoise.GetNoise(x * 0.3f, z * 0.3f) * 2f; 
+
+                HeightMap[x, z] = baseHeight;
             }
         }
 
@@ -53,10 +68,11 @@ public class HeightmapGenerator
                 float d = Distance(nx, ny, DISTANCE_FUNCTIONS.SquareBump);
 
                 if (d < 0) d = 0;
-                if (d > 1) d = 1;
+                if (d > 1) d = 1;                
 
                 e = Reshape(e, d);
-                e = MathUtils.Clamp(e, 0.0f, 1.0f);
+                e = MathUtils.Clamp(e, 0.0f, 1.0f);          
+
                 FallOffMap[x, z] = e;
             }
         }

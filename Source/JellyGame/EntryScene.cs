@@ -34,7 +34,6 @@ public class EntryScene : Scene
             LocalPosition = new Vector3(0f, 0f, 0)
         });
         EntityManager.AddComponent(cubeEntity, new MeshProcessor(MeshType.Cube, material));
-        EntityManager.AddComponent(cubeEntity, new LookAtObject() { Target = new Vector3(3, 3, 0)});
         
         EntityManager.AddComponent(anotherCubeEntity, new Transform()
         {
@@ -84,8 +83,6 @@ public class EntryScene : Scene
         AddGameSystem(new ScriptTest());
         
         AddGameSystem(new SpriteRendererSystem(EntityManager));
-        
-        AddGameSystem(new LookAtObjectSystem(EntityManager));
         
         AddGameSystem(new FreeCameraControllerSystem(EntityManager));
         
