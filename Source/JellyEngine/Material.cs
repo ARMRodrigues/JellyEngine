@@ -36,12 +36,12 @@ public class Material : IDisposable
 
         Albedo = new Texture();
 
-        _modelLocation = _shader.GetUniformLocation("model");
-        _viewLocation = _shader.GetUniformLocation("view");
-        _projectionLocation = _shader.GetUniformLocation("projection");
-        _lightAmbientLocation = _shader.GetUniformLocation("light.ambient");
-        _lightDiffuseLocation = _shader.GetUniformLocation("light.diffuse");
-        _lightSpecularLocation = _shader.GetUniformLocation("light.specular");
+        _modelLocation = _shader.GetUniformLocation("u_Model");
+        _viewLocation = _shader.GetUniformLocation("u_View");
+        _projectionLocation = _shader.GetUniformLocation("u_Projection");
+        _lightAmbientLocation = _shader.GetUniformLocation("u_Light.ambient");
+        _lightDiffuseLocation = _shader.GetUniformLocation("u_Light.diffuse");
+        _lightSpecularLocation = _shader.GetUniformLocation("u_Light.specular");
     }
 
     public Material(Texture albedo)
@@ -50,12 +50,12 @@ public class Material : IDisposable
 
         Albedo = albedo;
 
-        _modelLocation = _shader.GetUniformLocation("model");
-        _viewLocation = _shader.GetUniformLocation("view");
-        _projectionLocation = _shader.GetUniformLocation("projection");
-        _lightAmbientLocation = _shader.GetUniformLocation("light.ambient");
-        _lightDiffuseLocation = _shader.GetUniformLocation("light.diffuse");
-        _lightSpecularLocation = _shader.GetUniformLocation("light.specular");
+        _modelLocation = _shader.GetUniformLocation("u_Model");
+        _viewLocation = _shader.GetUniformLocation("u_View");
+        _projectionLocation = _shader.GetUniformLocation("u_Projection");
+        _lightAmbientLocation = _shader.GetUniformLocation("u_Light.ambient");
+        _lightDiffuseLocation = _shader.GetUniformLocation("u_Light.diffuse");
+        _lightSpecularLocation = _shader.GetUniformLocation("u_Light.specular");
     }
 
     public void Use()
