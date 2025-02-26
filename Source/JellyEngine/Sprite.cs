@@ -23,9 +23,15 @@ public class Sprite
         PixelsPerUnit = 100;
     }
 
-    public Sprite(Texture texture, float pixelsPerUnit)
+    public Sprite(Texture texture, float pixelsPerUnit = 100f)
     {
         Texture = texture;
-        pixelsPerUnit = pixelsPerUnit;
+        PixelsPerUnit = pixelsPerUnit;
+
+        if (PixelsPerUnit <= 0)
+        {
+            Console.WriteLine("Pixels per unit are too small, the Sprite will be not be displayed.");
+            PixelsPerUnit = 1;
+        }
     }
 }

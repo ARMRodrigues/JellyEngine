@@ -9,10 +9,10 @@ namespace JellyEngine;
 public class Texture
 {
     private uint _textureId;
+    private byte[] _pixelData = [];
     
-    public int Width { get; set; }
-    public int Height { get; set; }
-    public float PixelsPerUnit { get; set; } = 100.0f;
+    public int Width { get; private set; }
+    public int Height { get; private set; }
     
     public Texture()
     {
@@ -22,6 +22,26 @@ public class Texture
     public Texture(string path)
     {
         LoadTexture(path);
+    }
+
+    public Texture(int width, int height, Color[] pixels)
+    {
+        Width = width;
+        Height = height;
+        
+        _pixelData = new byte[Width * Height * 4];
+        
+        for (var i = 0; i < pixels.Length; i++)
+        {
+            _pixelData[i * 4] = (byte)(pixels[i].R * 255);
+            _pixelData[i * 4 + 1] = (byte)(pixels[i].G * 255);
+            _pixelData[i * 4 + 2] = (byte)(pixels[i].B * 255);
+            _pixelData[i * 4 + 3] = (byte)(pixels[i].A * 255);
+        }
+
+        LoadTextureFromPixelData();
+        
+        GL.BindTexture(TextureTarget.Texture2D, 0);
     }
 
     private void LoadTexture(string path)
@@ -35,45 +55,55 @@ public class Texture
         
         if (path != string.Empty && IsValidPath(path))
         {
-            using (var image = Image.Load<Rgba32>(path))
-            {
-                image.Mutate(x => x.Flip(FlipMode.Vertical));
+            using var image = Image.Load<Rgba32>(path);
+            
+            image.Mutate(x => x.Flip(FlipMode.Vertical));
                 
-                Width = image.Width;
-                Height = image.Height;
+            Width = image.Width;
+            Height = image.Height;
                 
-                var pixelData = new byte[Width * Height * 4];
+            _pixelData = new byte[Width * Height * 4];
                 
-                image.CopyPixelDataTo(pixelData);
+            image.CopyPixelDataTo(_pixelData);
                 
-                UploadTextureData(TextureTarget.Texture2D, _textureId, pixelData);
-            }
+            UploadTextureData(TextureTarget.Texture2D);
         }
         else
         {
-            //Logger.Error("String is empty");
-            using (var image = new Image<Rgba32>(64, 64, SixLabors.ImageSharp.Color.WhiteSmoke))
-            { // Save the image to a file image.Save("empty_red_image.png");
-                Width = image.Width;
-                Height = image.Height;
+            using var image = new Image<Rgba32>(64, 64, SixLabors.ImageSharp.Color.WhiteSmoke);
+            
+            Width = image.Width;
+            Height = image.Height;
 
-                var pixelData = new byte[Width * Height * 4];
+            _pixelData = new byte[Width * Height * 4];
                 
-                image.CopyPixelDataTo(pixelData);
+            image.CopyPixelDataTo(_pixelData);
                 
-                UploadTextureData(TextureTarget.Texture2D, _textureId, pixelData);
- 
-            }
+            UploadTextureData(TextureTarget.Texture2D);
         }
         
         GL.BindTexture(TextureTarget.Texture2D, 0);
     }
-
-    private void UploadTextureData(TextureTarget target, uint textureId, byte[] data)
+    
+    private void LoadTextureFromPixelData()
     {
-        var ptr = Marshal.AllocHGlobal(data.Length);
-        // Copy the byte array data to the unmanaged memory
-        Marshal.Copy(data, 0, ptr, data.Length);
+        _textureId = GL.GenTexture();
+        GL.BindTexture(TextureTarget.Texture2D, _textureId);
+
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+
+        UploadTextureData(TextureTarget.Texture2D);
+
+        GL.BindTexture(TextureTarget.Texture2D, 0);
+    }
+
+    private void UploadTextureData(TextureTarget target)
+    {
+        var ptr = Marshal.AllocHGlobal(_pixelData.Length);
+        Marshal.Copy(_pixelData, 0, ptr, _pixelData.Length);
         GL.TexImage2D(target, 0, PixelInternalFormat.Rgba, Width, Height, 0, GLPixelFormat.Rgba, GLPixelType.UnsignedByte, ptr);
         Marshal.FreeHGlobal(ptr);
     }
@@ -87,6 +117,26 @@ public class Texture
     {
         GL.BindTexture(TextureTarget.Texture2D, 0);
     }
+    
+    public void SaveToDisk(string filePath)
+    {
+        using var image = new Image<Rgba32>(Width, Height);
+        
+        for (var y = 0; y < Height; y++)
+        {
+            for (var x = 0; x < Width; x++)
+            {
+                var index = (y * Width + x) * 4;
+                var r = _pixelData[index];
+                var g = _pixelData[index + 1];
+                var b = _pixelData[index + 2];
+                var a = _pixelData[index + 3];
+                image[x, y] = new Rgba32(r, g, b, a);
+            }
+        }
+            
+        image.Save(filePath);
+    }
 
     public void Dispose()
     {
@@ -97,18 +147,14 @@ public class Texture
     {
         try
         {
-            // Check if the path is null or empty
             if (string.IsNullOrEmpty(path))
                 return false;
-
-            // Check for invalid characters
-            foreach (char c in Path.GetInvalidPathChars())
+            
+            if (Path.GetInvalidPathChars().Any(path.Contains))
             {
-                if (path.Contains(c))
-                    return false;
+                return false;
             }
-
-            // Check if the path exists
+            
             return File.Exists(path) || Directory.Exists(path);
         }
         catch (Exception)
