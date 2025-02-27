@@ -130,6 +130,109 @@ public struct MathUtils
         return Sin(angle) / Cos(angle);
     }
     
+        public static float Pow(float baseValue, float exponent)
+    {
+        // Caso especial: expoente é 0
+        if (exponent == 0) return 1;
+
+        // Caso especial: expoente é 1
+        if (exponent == 1) return baseValue;
+
+        // Caso especial: base é 0 e expoente é positivo
+        if (baseValue == 0 && exponent > 0) return 0;
+
+        // Caso especial: base é negativa e expoente não é inteiro
+        if (baseValue < 0 && !IsInteger(exponent))
+        {
+            throw new System.ArgumentException("Não é possível calcular a potência de um número negativo com expoente não inteiro.");
+        }
+
+        // Se o expoente for inteiro, usa exponenciação rápida
+        if (IsInteger(exponent))
+        {
+            return FastPower(baseValue, (int)exponent);
+        }
+
+        // Para expoentes decimais, usa logaritmo e exponencial
+        return Exp(exponent * Log(Abs(baseValue)));
+    }
+
+    // Função auxiliar para verificar se um número é inteiro
+    private static bool IsInteger(float value)
+    {
+        return value == (int)value;
+    }
+
+    // Função auxiliar para exponenciação rápida (expoentes inteiros)
+    private static float FastPower(float baseValue, int exponent)
+    {
+        if (exponent == 0) return 1;
+
+        bool isNegativeExponent = exponent < 0;
+        exponent = Abs(exponent);
+
+        float result = 1;
+        while (exponent > 0)
+        {
+            if (exponent % 2 == 1)
+            {
+                result *= baseValue;
+            }
+            baseValue *= baseValue;
+            exponent /= 2;
+        }
+
+        return isNegativeExponent ? 1 / result : result;
+    }
+
+    // Função auxiliar para calcular o logaritmo natural (ln)
+    private static float Log(float value)
+    {
+        if (value <= 0)
+        {
+            throw new System.ArgumentOutOfRangeException("O logaritmo natural é indefinido para valores não positivos.");
+        }
+
+        // Aproximação usando série de Taylor
+        float result = 0;
+        float term = (value - 1) / (value + 1);
+        float termSquared = term * term;
+        float currentTerm = term;
+        int n = 1;
+
+        for (int i = 0; i < 100; i++) // 100 iterações para precisão
+        {
+            result += currentTerm / n;
+            currentTerm *= termSquared;
+            n += 2;
+        }
+
+        return 2 * result;
+    }
+
+    // Função auxiliar para calcular a exponencial (e^x)
+    private static float Exp(float exponent)
+    {
+        // Aproximação usando série de Taylor
+        float result = 1;
+        float term = 1;
+        int factorial = 1;
+
+        for (int i = 1; i < 20; i++) // 20 iterações para precisão
+        {
+            factorial *= i;
+            term *= exponent;
+            result += term / factorial;
+        }
+
+        return result;
+    }
+    
+    private static int Abs(int value)
+    {
+        return value < 0 ? -value : value;
+    }
+    
     public static float[] ToOpenGLMatrixArray(Matrix4x4 matrix)
     {
         return

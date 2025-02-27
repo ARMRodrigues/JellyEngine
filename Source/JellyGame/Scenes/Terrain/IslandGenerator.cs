@@ -14,7 +14,7 @@ public class IslandGenerator
         new Color(200, 200, 210)  // Neve
     };
 
-    public int GridSize { get; set; } = 100;
+    public int GridSize { get; set; } = 200;
     public float HeightMultiplier { get; set; } = 10f;
     public float EdgeHeight { get; set; } = -3f;
 
@@ -56,10 +56,10 @@ public class IslandGenerator
         {
             for (var x = 0; x < GridSize; x++)
             {
-                var v0 = new Vector3(x + offsetX, _heightmapGenerator.FallOffMap[x, z] * HeightMultiplier, z + offsetZ);
-                var v1 = new Vector3(x + 1 + offsetX, _heightmapGenerator.FallOffMap[x + 1, z] * HeightMultiplier, z + offsetZ);
-                var v2 = new Vector3(x + offsetX, _heightmapGenerator.FallOffMap[x, z + 1] * HeightMultiplier, z + 1 + offsetZ);
-                var v3 = new Vector3(x + 1 + offsetX, _heightmapGenerator.FallOffMap[x + 1, z + 1] * HeightMultiplier, z + 1 + offsetZ);
+                var v0 = new Vector3(x + offsetX, _heightmapGenerator.HeightMap[x, z] * HeightMultiplier, z + offsetZ);
+                var v1 = new Vector3(x + 1 + offsetX, _heightmapGenerator.HeightMap[x + 1, z] * HeightMultiplier, z + offsetZ);
+                var v2 = new Vector3(x + offsetX, _heightmapGenerator.HeightMap[x, z + 1] * HeightMultiplier, z + 1 + offsetZ);
+                var v3 = new Vector3(x + 1 + offsetX, _heightmapGenerator.HeightMap[x + 1, z + 1] * HeightMultiplier, z + 1 + offsetZ);
 
                 // Pegando cores dos vértices
                 var c0 = colourMap[x, z];
@@ -268,5 +268,24 @@ public class IslandGenerator
         };
 
         return mesh;
+    }
+
+    public Texture GenerateNoiseTexture()
+    {
+        int width = GridSize;
+        int height = GridSize;
+    
+        var pixels = new Color[width * height];
+        
+        for (var y = 0; y < GridSize; y++)
+        {
+            for (var x = 0; x < GridSize; x++)
+            {
+                var noiseValue = _heightmapGenerator.HeightMap[x, y];
+                pixels[y * width + x] = Color.Lerp(new Color(0,0,0), Color.White, noiseValue);
+            }
+        }
+        
+        return new Texture(width, height, pixels);
     }
 }
