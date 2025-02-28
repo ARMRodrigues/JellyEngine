@@ -1,4 +1,5 @@
-﻿using JellyEngine;
+﻿using System.Numerics;
+using JellyEngine;
 
 namespace JellyGame.Scenes.Terrain;
 
@@ -20,6 +21,9 @@ public class HeightmapGenerator
 
     private readonly int _size;
     private readonly FastNoiseLite _noise;
+    
+    float maxNoiseHeight = float.MinValue;
+    float minNoiseHeight = float.MaxValue;
 
     public HeightmapGenerator(int newSize, FastNoiseLite noise)
     {
@@ -43,20 +47,92 @@ public class HeightmapGenerator
         detailNoise.SetDomainWarpAmp(70);
         detailNoise.SetFractalOctaves(4);
 
-        //float detailHeight = detailNoise.GetNoise(x * 0.3f, z * 0.3f) * 2f; 
+        //float detailHeight = detailNoise.GetNoise(x * 0.3f, z * 0.3f) * 2f;
 
-        var scale = 0.02f;
+        var noise = new Noise();
+
+        var scale = 30f;
+        var octaves = 5;
+        var persistance = 0.5f;
+        var lacunarity = 2f;
+        var seed = 4456864;
+
+        var prng = new Random(seed);
+        var octavesOffsets = new Vector2[octaves];
+
+        var offset = new Vector2();
+        
+        for (var i = 0; i < octaves; i++)
+        {
+            var offsetX = prng.Next(-100000, 100000) + offset.X/2;
+            var offsetY = prng.Next(-100000, 100000) + offset.Y/2;
+            octavesOffsets[i] = new Vector2(offsetX, offsetY);
+        }
+        
+        var halfWidth = _size / 2;
+        var halfHeight = _size / 2;
 
         for (int z = 0; z < _size; z++)
         {
             for (int x = 0; x < _size; x++)
             {
-                float baseHeight = _noise.GetNoise(x, z);
-                //float detailHeight = detailNoise.GetNoise(x * 0.3f, z * 0.3f) * 2f; 
+                var amplitude = 1f;
+                var frequency = 1f;
+                var noiseHeight = 0f;
+                
+                for (var i = 0; i < octaves; i++)
+                {
+                    var sampleX = (x - halfWidth + octavesOffsets[i].X) / scale * frequency;
+                    var sampleZ = (z - halfHeight + octavesOffsets[i].Y) / scale * frequency;
+                    
+                    var baseHeight = noise.Perlin2(sampleX, sampleZ);
+                    noiseHeight += baseHeight * amplitude;
+                    
+                    amplitude *= persistance;
+                    frequency *= lacunarity;
+                }
+                
+                //float detailHeight = detailNoise.GetNoise(x * 0.3f, z * 0.3f) * 2f;
+                
+                if (noiseHeight > maxNoiseHeight)
+                {
+                    maxNoiseHeight = noiseHeight;
+                }
+                else if (noiseHeight <= minNoiseHeight)
+                {
+                    minNoiseHeight = noiseHeight;
+                }
 
-                HeightMap[x, z] = baseHeight;
+                //noiseHeight = (noiseHeight + 1) * 0.5f;
+
+                HeightMap[x, z] = noiseHeight;
             }
         }
+        
+        Console.WriteLine((maxNoiseHeight));
+        Console.WriteLine((minNoiseHeight));
+
+        for (var z = 0; z < _size; z++)
+        {
+            for (var x = 0; x < _size; x++)
+            {
+                HeightMap[x, z] = NewNoiseRange(HeightMap[x, z]);
+            }
+        }
+        var min = float.MaxValue;
+        var max = float.MinValue;
+        for (var z = 0; z < _size; z++)
+        {
+            for (var x = 0; x < _size; x++)
+            {
+                var value = HeightMap[x, z];
+                if (value < min) min = value;
+                if (value > max) max = value;
+            }
+        }
+        
+        Console.WriteLine(min);
+        Console.WriteLine(max);
 
         for (int z = 0; z < _size; z++)
         {
@@ -78,6 +154,22 @@ public class HeightmapGenerator
         }
         
     }
+    
+    public float NewNoiseRange(float value)
+    {
+        float oldMax = maxNoiseHeight;
+        float oldMin = minNoiseHeight;
+        float newMax = 1.0f;
+        float newMin = 0.0f;
+        float oldRange = oldMax - oldMin;
+        float newRange = newMax - newMin;
+
+        //float value = elevation.GetData(x, z);
+        float newValue = (((value - oldMin) * newRange) / oldRange) + newMin;
+
+        return newValue;
+    }
+
 
     public float Distance(float nx, float ny, DISTANCE_FUNCTIONS funcType)
     {

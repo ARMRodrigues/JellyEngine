@@ -233,6 +233,19 @@ public struct MathUtils
         return value < 0 ? -value : value;
     }
     
+// InverseLerp: Calcula o parâmetro t para um valor dentro do intervalo [a, b]
+    public static float InverseLerp(float a, float b, float value)
+    {
+        // Evita divisão por zero
+        if (a == b)
+        {
+            throw new System.ArgumentException("Os valores de 'a' e 'b' não podem ser iguais.");
+        }
+
+        // Calcula o parâmetro t
+        return (value - a) / (b - a);
+    }
+    
     public static float[] ToOpenGLMatrixArray(Matrix4x4 matrix)
     {
         return

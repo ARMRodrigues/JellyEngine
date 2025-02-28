@@ -35,7 +35,7 @@ public class IslandWorldScene : Scene
         EntityManager.AddChild(referenceEntity, ZreferenceEntity);
         
         var islandGenerator = new IslandGenerator();
-        var mesh = islandGenerator.GenerateTopMesh();
+        /*var mesh = islandGenerator.GenerateTopMesh();
         var terrainEntity = EntityManager.CreateEntity();
         var uvTexture = new Texture("uv.png");
         var uvTexture2 = new Texture();
@@ -50,11 +50,20 @@ public class IslandWorldScene : Scene
         var bottomMesh = islandGenerator.GenerateBottomMesh();
         var bottomMeshEntity = EntityManager.CreateEntity();
         EntityManager.AddComponent(bottomMeshEntity, new Transform());
-        EntityManager.AddComponent(bottomMeshEntity, new MeshProcessor(bottomMesh, new Material(uvTexture)));
+        EntityManager.AddComponent(bottomMeshEntity, new MeshProcessor(bottomMesh, new Material(uvTexture)));*/
+
+        var noiseTexture = islandGenerator.GenerateNoiseTexture();
+        var noiseCanvasTexture = EntityManager.CreateEntity();
+        EntityManager.AddComponent(noiseCanvasTexture, new Transform()
+        {
+            LocalScale = Vector3.One * 4
+        });
+        EntityManager.AddComponent(noiseCanvasTexture, new CanvasRenderer(new Sprite(noiseTexture)));
         
         AddGameSystem(new CameraSystem(EntityManager));
         AddGameSystem(new TransformSystem(EntityManager));
         AddGameSystem(new MeshRendererSystem(EntityManager));
-        AddGameSystem(new FreeCameraControllerSystem(EntityManager));
+        //AddGameSystem(new FreeCameraControllerSystem(EntityManager));
+        AddGameSystem(new CanvasRendererSystem(EntityManager));
     }
 }
