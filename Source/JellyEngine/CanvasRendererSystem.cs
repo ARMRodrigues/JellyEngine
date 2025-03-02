@@ -36,6 +36,8 @@ public class CanvasRendererSystem (EntityManager entityManager) : GameSystem
 
         foreach (var (transform, canvasRenderer) in _sprites)
         {
+            if (!canvasRenderer.IsVisible)
+                return;
             canvasRenderer.PrepareRender();
             canvasRenderer.Material.Use();
             canvasRenderer.Material.SetColor(canvasRenderer.Color);

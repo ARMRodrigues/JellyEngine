@@ -3,7 +3,7 @@ using JellyAssembly.OpenGL;
 
 namespace JellyEngine;
 
-public class CanvasRenderer : GameComponent, IDisposable
+public class CanvasRenderer : Renderer, IDisposable
 {
     private Sprite _sprite;
     private uint _vao;

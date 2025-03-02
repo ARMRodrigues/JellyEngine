@@ -21,6 +21,9 @@ public class SpriteRendererSystem(EntityManager entityManager) : GameSystem
 
         foreach (var (transform, spriteRenderer) in _sprites)
         {
+            if (!spriteRenderer.IsVisible)
+                return;
+            
             spriteRenderer.PrepareRender();
             spriteRenderer.Material.Use();
             spriteRenderer.Material.SetColor(spriteRenderer.Color);

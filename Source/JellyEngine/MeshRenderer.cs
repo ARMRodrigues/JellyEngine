@@ -2,7 +2,7 @@
 
 namespace JellyEngine;
 
-public class MeshProcessor : GameComponent, IDisposable
+public class MeshRenderer : Renderer, IDisposable
 {
     private uint _vao, _vbo, _ebo;
     private int _indicesSize;
@@ -11,13 +11,13 @@ public class MeshProcessor : GameComponent, IDisposable
     
     public Material Material => _material;
 
-    public MeshProcessor(Mesh mesh)
+    public MeshRenderer(Mesh mesh)
     {
         InitializeComp(mesh);
         _material = new Material();
     }
     
-    public MeshProcessor(Mesh mesh, Material material)
+    public MeshRenderer(Mesh mesh, Material material)
     {
         InitializeComp(mesh);
         _material = material;
@@ -121,7 +121,7 @@ public class MeshProcessor : GameComponent, IDisposable
         }
     }
 
-    ~MeshProcessor()
+    ~MeshRenderer()
     {
         Cleanup();
     }
