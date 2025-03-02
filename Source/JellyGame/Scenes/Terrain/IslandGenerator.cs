@@ -15,7 +15,9 @@ public class IslandGenerator
     };
 
     public int GridSize { get; set; } = 200;
-    public float HeightMultiplier { get; set; } = 10f;
+    public int Width { get; set; } = 300;
+    public int Height { get; set; } = 200;
+    public float HeightMultiplier { get; set; } = 32f;
     public float EdgeHeight { get; set; } = -3f;
 
     private HeightmapGenerator _heightmapGenerator { get; set; }
@@ -24,12 +26,13 @@ public class IslandGenerator
     public IslandGenerator()
     {
         var noise = new FastNoiseLite();
-        noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
         noise.SetFractalType(FastNoiseLite.FractalType.FBm);
         noise.SetFrequency(0.055f);
         noise.SetFractalOctaves(5);
+        noise.SetFractalLacunarity(1.5f);
 
-        _heightmapGenerator = new HeightmapGenerator(GridSize, noise);
+        _heightmapGenerator = new HeightmapGenerator(Width,Height, noise);
         _colorGenerator = new ColorGenerator(TERRAIN_COLS, 0.45f);
     }
 
@@ -39,33 +42,46 @@ public class IslandGenerator
         var normals = new List<Vector3>();
         var uvs = new List<Vector2>();
         var indices = new List<uint>();
-        var heightMap = _heightmapGenerator.HeightMap;
+        var heightMap = _heightmapGenerator.FallOffMap;
         var colourMap = _colorGenerator.GenerateColours(heightMap, HeightMultiplier);
         var colors = new List<Vector4>();
 
-        var offsetX = (GridSize - 1) / -2f;
-        var offsetZ = (GridSize - 1) / -2f;
+        var offsetX = (Width - 1) / -2f;
+        var offsetZ = (Height - 1) / -2f;
 
         for (int i = 0; i < 5; i++) // Testa algumas posições aleatórias
-{
-    Console.WriteLine($"Color {i}: {colourMap[i, i].ToVector4()}");
-}
-
-
-        for (var z = 0; z < GridSize; z++)
         {
-            for (var x = 0; x < GridSize; x++)
+            Console.WriteLine($"Color {i}: {colourMap[i, i].ToVector4()}");
+        }
+
+
+        for (var z = 0; z < Height; z++)
+        {
+            for (var x = 0; x < Width; x++)
             {
-                var v0 = new Vector3(x + offsetX, _heightmapGenerator.HeightMap[x, z] * HeightMultiplier, z + offsetZ);
-                var v1 = new Vector3(x + 1 + offsetX, _heightmapGenerator.HeightMap[x + 1, z] * HeightMultiplier, z + offsetZ);
-                var v2 = new Vector3(x + offsetX, _heightmapGenerator.HeightMap[x, z + 1] * HeightMultiplier, z + 1 + offsetZ);
-                var v3 = new Vector3(x + 1 + offsetX, _heightmapGenerator.HeightMap[x + 1, z + 1] * HeightMultiplier, z + 1 + offsetZ);
+                var height1 = heightMap[x, z];
+                var height2 = heightMap[x + 1, z];
+                var height3 = heightMap[x, z + 1];
+                var height4 = heightMap[x + 1, z + 1];
+                
+                var c0 = GetColor(height1);
+                var c1 = GetColor(height2);
+                var c2 = GetColor(height3);
+                var c3 = GetColor(height4);
+                
+                
+                var v0 = new Vector3(x + offsetX, AdjustMountain(height1)* HeightMultiplier, z + offsetZ);
+                var v1 = new Vector3(x + 1 + offsetX, AdjustMountain(height2)* HeightMultiplier, z + offsetZ);
+                var v2 = new Vector3(x + offsetX, AdjustMountain(height3)* HeightMultiplier, z + 1 + offsetZ);
+                var v3 = new Vector3(x + 1 + offsetX, AdjustMountain(height4)* HeightMultiplier, z + 1 + offsetZ);
 
                 // Pegando cores dos vértices
-                var c0 = colourMap[x, z];
+                /*var c0 = colourMap[x, z];
                 var c1 = colourMap[x + 1, z];
                 var c2 = colourMap[x, z + 1];
-                var c3 = colourMap[x + 1, z + 1];
+                var c3 = colourMap[x + 1, z + 1];*/
+                
+                
 
                 // Cor média de cada triângulo
                 var color1 = (c0 + c1 + c2) / 3f;
@@ -87,6 +103,16 @@ public class IslandGenerator
         };
 
         return mesh;
+    }
+    
+    float AdjustMountain(float height)
+    {
+        if (height > 0.8f)
+        {
+            return (float)(0.8f + Math.Pow((height - 0.8f) * 5f, 1.5f) * 1.6f);
+        }
+        
+        return height;
     }
 
     private void AddTriangle(List<Vector3> vertices, List<Vector3> normals, List<Vector4> colors, List<Vector2> uvs,
@@ -272,20 +298,34 @@ public class IslandGenerator
 
     public Texture GenerateNoiseTexture()
     {
-        int width = GridSize;
-        int height = GridSize;
+        int width = Width;
+        int height = Height;
     
         var pixels = new Color[width * height];
         
-        for (var y = 0; y < GridSize; y++)
+        for (var y = 0; y < Height; y++)
         {
-            for (var x = 0; x < GridSize; x++)
+            for (var x = 0; x < Width; x++)
             {
-                var noiseValue = _heightmapGenerator.HeightMap[x, y];
-                pixels[y * width + x] = Color.Lerp(new Color(0,0,0), Color.White, noiseValue);
+                var noiseValue = _heightmapGenerator.FallOffMap[x, y];
+                pixels[y * width + x] = GetColor(noiseValue);
+                //pixels[y * width + x] = Color.Lerp(new Color(0,0,0), Color.White, noiseValue);
             }
         }
         
         return new Texture(width, height, pixels);
+    }
+    
+    Color GetColor(float value)
+    {
+        if (value >= 0.0f && value < 0.3f) return new Color("#1b82c5");
+        if (value >= 0.3f && value < 0.4f) return new Color("#2188d9"); 
+        if (value >= 0.4f && value < 0.426f) return new Color("#dbba98");
+        if (value >= 0.426f && value < 0.537f) return new Color("#4bba50");
+        if (value >= 0.537f && value < 0.65f) return new Color("#46b249");
+        if (value >= 0.65f && value < 0.74f) return new Color("#6d6b5e");
+        if (value >= 0.74f && value < 0.8f) return new Color("#645952");
+
+        return Color.White;
     }
 }
