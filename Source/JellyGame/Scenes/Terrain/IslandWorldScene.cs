@@ -35,14 +35,14 @@ public class IslandWorldScene : Scene
         EntityManager.AddChild(referenceEntity, ZreferenceEntity);
         
         var islandGenerator = new IslandGenerator();
-        /*var mesh = islandGenerator.GenerateTopMesh();
+        var mesh = islandGenerator.GenerateTopMesh();
         var terrainEntity = EntityManager.CreateEntity();
         var uvTexture = new Texture("uv.png");
         var uvTexture2 = new Texture();
         EntityManager.AddComponent(terrainEntity, new Transform());
         EntityManager.AddComponent(terrainEntity, new MeshProcessor(mesh, new Material(uvTexture2)));
         
-        var borderMesh = islandGenerator.GenerateBorderMesh();
+        /*var borderMesh = islandGenerator.GenerateBorderMesh();
         var edgeterrainEntity = EntityManager.CreateEntity();
         EntityManager.AddComponent(edgeterrainEntity, new Transform());
         EntityManager.AddComponent(edgeterrainEntity, new MeshProcessor(borderMesh, new Material(uvTexture)));
@@ -63,7 +63,7 @@ public class IslandWorldScene : Scene
         AddGameSystem(new CameraSystem(EntityManager));
         AddGameSystem(new TransformSystem(EntityManager));
         AddGameSystem(new MeshRendererSystem(EntityManager));
-        //AddGameSystem(new FreeCameraControllerSystem(EntityManager));
-        AddGameSystem(new CanvasRendererSystem(EntityManager));
+        AddGameSystem(new FreeCameraControllerSystem(EntityManager));
+        //AddGameSystem(new CanvasRendererSystem(EntityManager));
     }
 }

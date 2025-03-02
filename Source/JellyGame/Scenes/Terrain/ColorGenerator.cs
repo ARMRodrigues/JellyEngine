@@ -23,9 +23,10 @@ public class ColorGenerator
     public Color[,] GenerateColours(float[,] heights, float amplitude)
     {
         int size = heights.GetLength(0);
-        var colours = new Color[size, size];
+        int height = heights.GetLength(1);
+        var colours = new Color[size, height];
 
-        for (int z = 0; z < size; z++)
+        for (int z = 0; z < height; z++)
         {
             for (int x = 0; x < size; x++)
             {
