@@ -2,35 +2,63 @@
 using JellyAssembly.OpenGL;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
 
 namespace JellyEngine;
 
-public class Texture
+public enum WrapMode
+{
+    Repeat = 0,
+    Clamp = 1,
+    Mirror = 2,
+    MirrorOnce = 3
+}
+
+public enum FilterMode
+{
+    Point = 0,
+    Bilinear = 1,
+    Trilinear = 2
+}
+
+public class Texture : IDisposable
 {
     private uint _textureId;
-    private byte[] _pixelData = [];
-    
+    private bool _disposed = false;
     public int Width { get; private set; }
     public int Height { get; private set; }
-    
+    public WrapMode WrapMode { get; set; } = WrapMode.Repeat;
+    public FilterMode FilterMode { get; set; } = FilterMode.Bilinear;
+
+    private byte[] _pixelData = [];
+
     public Texture()
     {
-        LoadTexture("");
+        CreateDefaultTexture();
     }
 
     public Texture(string path)
     {
-        LoadTexture(path);
+        try
+        {
+            var image = new Image(path, flip: true);
+            Width = image.Width;
+            Height = image.Height;
+            _pixelData = image.Data;
+            LoadTextureFromPixelData();
+        }
+        catch (Exception)
+        {
+            CreateDefaultTexture();
+        }
     }
 
     public Texture(int width, int height, Color[] pixels)
     {
         Width = width;
         Height = height;
-        
+
         _pixelData = new byte[Width * Height * 4];
-        
+
         for (var i = 0; i < pixels.Length; i++)
         {
             _pixelData[i * 4] = (byte)(pixels[i].R * 255);
@@ -40,65 +68,58 @@ public class Texture
         }
 
         LoadTextureFromPixelData();
-        
         GL.BindTexture(TextureTarget.Texture2D, 0);
     }
 
-    private void LoadTexture(string path)
+    private void CreateDefaultTexture()
     {
-        _textureId = GL.GenTexture();
-        
-        GL.BindTexture(TextureTarget.Texture2D, _textureId);
-        
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-        
-        if (path != string.Empty && IsValidPath(path))
-        {
-            using var image = Image.Load<Rgba32>(path);
-            
-            image.Mutate(x => x.Flip(FlipMode.Vertical));
-                
-            Width = image.Width;
-            Height = image.Height;
-                
-            _pixelData = new byte[Width * Height * 4];
-                
-            image.CopyPixelDataTo(_pixelData);
-                
-            UploadTextureData(TextureTarget.Texture2D);
-        }
-        else
-        {
-            using var image = new Image<Rgba32>(64, 64, SixLabors.ImageSharp.Color.WhiteSmoke);
-            
-            Width = image.Width;
-            Height = image.Height;
-
-            _pixelData = new byte[Width * Height * 4];
-                
-            image.CopyPixelDataTo(_pixelData);
-                
-            UploadTextureData(TextureTarget.Texture2D);
-        }
-        
-        GL.BindTexture(TextureTarget.Texture2D, 0);
+        Width = 1;
+        Height = 1;
+        _pixelData = [255, 255, 255, 255];
+        LoadTextureFromPixelData();
     }
-    
+
     private void LoadTextureFromPixelData()
     {
         _textureId = GL.GenTexture();
         GL.BindTexture(TextureTarget.Texture2D, _textureId);
-
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-
+        ApplyTextureSettings();
         UploadTextureData(TextureTarget.Texture2D);
-
         GL.BindTexture(TextureTarget.Texture2D, 0);
     }
+
+    private void ApplyTextureSettings()
+    {
+        var wrapMode = GetWrapMode(WrapMode);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)wrapMode);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)wrapMode);
+
+        var (minFilter, magFilter) = GetFilterMode(FilterMode);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)minFilter);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)magFilter);
+
+        if (FilterMode == FilterMode.Trilinear)
+        {
+            GL.GenerateMipmap(TextureTarget.Texture2D);
+        }
+    }
+
+    private static TextureWrapMode GetWrapMode(WrapMode mode) => mode switch
+    {
+        WrapMode.Repeat => TextureWrapMode.Repeat,
+        WrapMode.Clamp => TextureWrapMode.ClampToEdge,
+        WrapMode.Mirror => TextureWrapMode.MirroredRepeat,
+        WrapMode.MirrorOnce => TextureWrapMode.MirrorClampToEdge,
+        _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, "Invalid wrap mode")
+    };
+
+    private static (TextureMinFilter min, TextureMagFilter mag) GetFilterMode(FilterMode mode) => mode switch
+    {
+        FilterMode.Point => (TextureMinFilter.Nearest, TextureMagFilter.Nearest),
+        FilterMode.Bilinear => (TextureMinFilter.Linear, TextureMagFilter.Linear),
+        FilterMode.Trilinear => (TextureMinFilter.LinearMipmapLinear, TextureMagFilter.Linear),
+        _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, "Invalid filter mode")
+    };
 
     private void UploadTextureData(TextureTarget target)
     {
@@ -108,20 +129,10 @@ public class Texture
         Marshal.FreeHGlobal(ptr);
     }
 
-    public void Bind()
-    {
-        GL.BindTexture(TextureTarget.Texture2D, _textureId);
-    }
-
-    public void Unbind()
-    {
-        GL.BindTexture(TextureTarget.Texture2D, 0);
-    }
-    
     public void SaveToDisk(string filePath)
     {
         using var image = new Image<Rgba32>(Width, Height);
-        
+
         for (var y = 0; y < Height; y++)
         {
             for (var x = 0; x < Width; x++)
@@ -134,33 +145,30 @@ public class Texture
                 image[x, y] = new Rgba32(r, g, b, a);
             }
         }
-            
+
         image.Save(filePath);
     }
 
+    public void Bind() => GL.BindTexture(TextureTarget.Texture2D, _textureId);
+    public void Unbind() => GL.BindTexture(TextureTarget.Texture2D, 0);
+
     public void Dispose()
     {
-        GL.DeleteTexture(_textureId);
+        Cleanup();
+        GC.SuppressFinalize(this);
     }
 
-    private bool IsValidPath(string path)
+    private void Cleanup()
     {
-        try
+        if (!_disposed)
         {
-            if (string.IsNullOrEmpty(path))
-                return false;
-            
-            if (Path.GetInvalidPathChars().Any(path.Contains))
-            {
-                return false;
-            }
-            
-            return File.Exists(path) || Directory.Exists(path);
+            GL.DeleteTexture(_textureId);
+            _disposed = true;
         }
-        catch (Exception)
-        {
-            Console.WriteLine("Texture was not found, please check the path");
-            return false;
-        }
+    }
+
+    ~Texture()
+    {
+        Cleanup();
     }
 }
