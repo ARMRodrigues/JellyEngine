@@ -74,12 +74,6 @@ public class MeshRenderer : Renderer, IDisposable
         
         GL.Enable(EnableCap.CullFace);
         GL.CullFace(CullFaceMode.Back);
-
-        if (Material.HasTransparency)
-        {
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-        }
         
         Material.Use();
     }
@@ -87,9 +81,6 @@ public class MeshRenderer : Renderer, IDisposable
     private void EndRender()
     {
         Material.Unbind();
-
-        if (Material.HasTransparency)
-            GL.Disable(EnableCap.Blend);
     }
 
     public void Render()

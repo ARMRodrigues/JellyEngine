@@ -6,49 +6,43 @@ namespace JellyEngine;
 
 public class Shader : IDisposable
 {
-     public string VertexSource { get; private set; }
-    public string FragmentSource { get; private set; }
-    public uint ShaderProgram { get; private set; }
-
+    private uint _shaderProgram;
+    private readonly string _vertexSource;
+    private readonly string _fragmentSource;
     private bool _disposed;
 
     public Shader()
     {
-        VertexSource = LoadShaderFilePath("JellyEngine.Resources.Shaders.DefaultVertexShader.glsl");
-        FragmentSource = LoadShaderFilePath("JellyEngine.Resources.Shaders.DefaultFragmentShader.glsl");
+        _vertexSource = LoadShaderFilePath("JellyEngine.Resources.Shaders.DefaultVertexShader.glsl");
+        _fragmentSource = LoadShaderFilePath("JellyEngine.Resources.Shaders.DefaultFragmentShader.glsl");
 
         Initialize();
     }
     
     public Shader(string vertexPath, string fragmentPath)
     {
-        VertexSource = LoadShaderFilePath(vertexPath);
-        FragmentSource = LoadShaderFilePath(fragmentPath);
+        _vertexSource = LoadShaderFilePath(vertexPath);
+        _fragmentSource = LoadShaderFilePath(fragmentPath);
 
         Initialize();
     }
 
     private void Initialize()
     {
-        // Create and compile vertex shader
-        var vertexShader = CompileShader(ShaderType.VertexShader, VertexSource);
+        var vertexShader = CompileShader(ShaderType.VertexShader, _vertexSource);
+        var fragmentShader = CompileShader(ShaderType.FragmentShader, _fragmentSource);
 
-        // Create and compile fragment shader
-        var fragmentShader = CompileShader(ShaderType.FragmentShader, FragmentSource);
-
-        // Create shader program and attach shaders
-        ShaderProgram = GL.CreateProgram();
-        GL.AttachShader(ShaderProgram, vertexShader);
-        GL.AttachShader(ShaderProgram, fragmentShader);
-        GL.LinkProgram(ShaderProgram);
-        var result = GL.GetProgramiv(ShaderProgram, GetProgramParameterName.LinkStatus);
+        _shaderProgram = GL.CreateProgram();
+        GL.AttachShader(_shaderProgram, vertexShader);
+        GL.AttachShader(_shaderProgram, fragmentShader);
+        GL.LinkProgram(_shaderProgram);
+        var result = GL.GetProgramiv(_shaderProgram, GetProgramParameterName.LinkStatus);
         if (result <= 0)
         {
-            var error = GL.GetProgramInfoLog(ShaderProgram, 2048);
+            var error = GL.GetProgramInfoLog(_shaderProgram, 2048);
             Console.WriteLine($"The shader result was: {error}");
         }
-
-        // Delete the shaders (they are now linked into the program and no longer needed)
+        
         GL.DeleteShader(vertexShader);
         GL.DeleteShader(fragmentShader);
     }
@@ -72,7 +66,7 @@ public class Shader : IDisposable
 
     public void Use()
     {
-        GL.UseProgram(ShaderProgram);
+        GL.UseProgram(_shaderProgram);
     }
 
     public void Unbind()
@@ -82,7 +76,7 @@ public class Shader : IDisposable
 
     public int GetUniformLocation(string uniformName)
     {
-        var uniform = GL.GetUniformLocation(ShaderProgram, uniformName);
+        var uniform = GL.GetUniformLocation(_shaderProgram, uniformName);
 
         if (uniform < 0)
         {
@@ -92,9 +86,19 @@ public class Shader : IDisposable
         return uniform;
     }
 
+    public void SetFloat(int uniformLocation, float value)
+    {
+        GL.Uniform1f(uniformLocation, value);
+    }
+
     public void SetVector3(int uniformLocation, Vector3 value)
     {
         GL.Uniform3f(uniformLocation, value);
+    }
+    
+    public void SetVector4(int uniformLocation, Vector4 value)
+    {
+        GL.Uniform4f(uniformLocation, value);
     }
 
     public void SetMatrix4(int uniformLocation, Matrix4x4 matrix)
@@ -128,7 +132,7 @@ public class Shader : IDisposable
     {
         if (!_disposed)
         {
-            GL.DeleteProgram(ShaderProgram);
+            GL.DeleteProgram(_shaderProgram);
 
             _disposed = true;
         }

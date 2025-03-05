@@ -8,13 +8,17 @@ public class MeshRendererSystem(EntityManager entityManager) : GameSystem
     
     public override void Render()
     {
-        foreach (var (entity, transform, meshRenderer) in _entityManager.Query<Transform, MeshRenderer>())
+        foreach (var (transform, meshRenderer) in _entityManager.Query<Transform, MeshRenderer>())
         {
             if (!meshRenderer.IsVisible)
                 return;
+
+            var cameraTransform = _entityManager.GetComponent<Transform>(new Entity(Camera.Main.CameraEntityId));
+            var environment = SceneEnvironment.Main;
             
             meshRenderer.Material.Use();
-            meshRenderer.Material.SetMVP(transform.WorldMatrix, Camera.Main.ViewMatrix, Camera.Main.ProjectionMatrix);
+            meshRenderer.Material.SetMatrices(transform.WorldMatrix, Camera.Main.ViewMatrix, Camera.Main.ProjectionMatrix);
+            meshRenderer.Material.SetLightData(cameraTransform.Position, environment.DirectionalLight);
             meshRenderer.Render();
         }
     }

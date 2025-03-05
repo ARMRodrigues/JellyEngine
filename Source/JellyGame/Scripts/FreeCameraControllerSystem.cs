@@ -9,7 +9,7 @@ public class FreeCameraControllerSystem(EntityManager entityManager) : GameSyste
     private readonly EntityManager _entityManager = entityManager;
 
     private Transform? _currentCameraTransform;
-    private float _moveSpeed = 0.15f;
+    private float _moveSpeed = 0.55f;
     private float _lookSensitivity = 0.1f;
     private float _yaw;
     private float _pitch;

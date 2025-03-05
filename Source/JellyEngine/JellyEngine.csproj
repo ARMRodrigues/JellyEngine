@@ -18,4 +18,8 @@
     <EmbeddedResource Include="Resources/**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="EngineData\Assets\" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

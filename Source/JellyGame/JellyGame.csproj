@@ -10,4 +10,8 @@
     <ProjectReference Include="..\JellyEngine\JellyEngine.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Assets\Textures\" />
+  </ItemGroup>
+
 </Project>

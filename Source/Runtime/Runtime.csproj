@@ -12,4 +12,15 @@
     <ProjectReference Include="..\JellyGame\JellyGame.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AssetFiles Include="..\JellyEngine\EngineData\**\*" />
+  </ItemGroup>
+
+  <!-- Copia os arquivos da pasta Assets para a pasta de saída do Projeto2 preservando a estrutura -->
+  <Target Name="CopyAssets" AfterTargets="Build">
+    <Copy
+            SourceFiles="@(AssetFiles)"
+            DestinationFiles="@(AssetFiles->'$(OutDir)\EngineData\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
 </Project>
