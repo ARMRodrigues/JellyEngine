@@ -6,6 +6,7 @@ public static class MeshType
 {
     public static Mesh Quad => CreateQuad();
     public static Mesh Cube => CreateCube();
+    public static Mesh Plane => CreatePlane();
     private static Mesh CreateQuad()
     {
         // Create individual lists
@@ -76,6 +77,77 @@ public static class MeshType
 
         return mesh;
     }
+    
+    private static Mesh CreatePlane()
+        {
+            // Criação das listas de vértices para o plano
+            var positions = new List<Vector3>
+            {
+                new(-0.5f,  0.0f, -0.5f), // Bottom left
+                new( 0.5f,  0.0f, -0.5f), // Bottom right
+                new( 0.5f,  0.0f,  0.5f), // Top right
+                new(-0.5f,  0.0f,  0.5f)  // Top left
+            };
+
+            var normals = new List<Vector3>
+            {
+                new(0.0f, 1.0f, 0.0f),
+                new(0.0f, 1.0f, 0.0f),
+                new(0.0f, 1.0f, 0.0f),
+                new(0.0f, 1.0f, 0.0f)
+            };
+
+            var tangents = new List<Vector4>
+            {
+                new(1.0f, 0.0f, 0.0f, 1.0f),
+                new(1.0f, 0.0f, 0.0f, 1.0f),
+                new(1.0f, 0.0f, 0.0f, 1.0f),
+                new(1.0f, 0.0f, 0.0f, 1.0f)
+            };
+
+            var colors = new List<Vector4>
+            {
+                new(1.0f, 1.0f, 1.0f, 1.0f),
+                new(1.0f, 1.0f, 1.0f, 1.0f),
+                new(1.0f, 1.0f, 1.0f, 1.0f),
+                new(1.0f, 1.0f, 1.0f, 1.0f)
+            };
+
+            var uv0 = new List<Vector2>
+            {
+                new(0.0f, 0.0f), // Bottom left
+                new(1.0f, 0.0f), // Bottom right
+                new(1.0f, 1.0f), // Top right
+                new(0.0f, 1.0f)  // Top left
+            };
+
+            var uv1 = new List<Vector2>
+            {
+                new(0.0f, 0.0f),
+                new(1.0f, 0.0f),
+                new(1.0f, 1.0f),
+                new(0.0f, 1.0f)
+            };
+
+            var indices = new List<uint>
+            {
+                0, 1, 2, // First triangle
+                0, 2, 3  // Second triangle
+            };
+
+            var mesh = new Mesh
+            {
+                Positions = positions,
+                Normals = normals,
+                Tangents = tangents,
+                Colors = colors,
+                UV0 = uv0,
+                UV1 = uv1,
+                Indices = indices.ToArray()
+            };
+
+            return mesh;
+        }
 
     private static Mesh CreateCube()
     {
