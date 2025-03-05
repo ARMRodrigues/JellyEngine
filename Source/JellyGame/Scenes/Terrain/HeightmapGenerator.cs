@@ -5,64 +5,52 @@ namespace JellyGame.Scenes.Terrain;
 
 public class HeightmapGenerator
 {
-    public enum DISTANCE_FUNCTIONS
-    {
-        SquareBump,
-        EuclideanSquared,
-        Diagonal,
-        Manhattan,
-        Euclidean,
-        Hyperboloid,
-        Blob
-    }
-
     public readonly float[,] HeightMap;
     public readonly float[,] FallOffMap;
+    public readonly float[,] BiomeMap;
 
-    //private readonly int _size;
     private readonly int _width;
     private readonly int _height;
     private readonly FastNoiseLite _noise;
+    private readonly FastNoiseLite _biomeNoise;
     
-    float maxNoiseHeight = float.MinValue;
-    float minNoiseHeight = float.MaxValue;
+    float _maxNoiseHeight = float.MinValue;
+    float _minNoiseHeight = float.MaxValue;
+    
+    int _seed = 0;
 
-    public HeightmapGenerator(int width, int height, FastNoiseLite noise)
+    public HeightmapGenerator(Terrain terrain)
     {
-        //_size = newSize + 1;
-        _width = width + 1;
-        _height = height + 1;
-        _noise = noise;
+        _width = terrain.Width + 1;
+        _height = terrain.Depth + 1;
+        _seed = terrain.Seed;
+        
+        _noise = new FastNoiseLite(_seed);
+        _noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+        _noise.SetFrequency(3f);
+        _noise.SetFractalType(FastNoiseLite.FractalType.None);
+        
+        _biomeNoise = new FastNoiseLite();
+        _biomeNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+        _biomeNoise.SetFrequency(1f);
+        _biomeNoise.SetFractalType(FastNoiseLite.FractalType.None);
        
         HeightMap = new float[_width, _height];
         FallOffMap = new float[_width, _height];
+        BiomeMap = new float[_width, _height];
 
         GenerateHeightmap();
+        GenerateFalloffMap();
     }
 
-    public void GenerateHeightmap()
+    private void GenerateHeightmap()
     {
-        FastNoiseLite detailNoise = new FastNoiseLite();
-        detailNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-        detailNoise.SetFrequency(-0.020f);
-        detailNoise.SetFractalType(FastNoiseLite.FractalType.None);
-        detailNoise.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.EuclideanSq);
-        detailNoise.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2);
-        detailNoise.SetDomainWarpAmp(70);
-        detailNoise.SetFractalOctaves(4);
-
-        //float detailHeight = detailNoise.GetNoise(x * 0.3f, z * 0.3f) * 2f;
-
-        var noise = new Noise();
-        noise.Seed(new Random().Next(0, 1000000));
-
-        var scale = 30f;
-        var octaves = 3;
+        var scale = 250f;
+        var octaves = 5;
         var persistance = 0.5f;
-        var lacunarity = 2f;
-        var seed = 4456864;
+        var lacunarity = 0.4f;
 
-        var prng = new Random(seed);
+        var prng = new Random(_seed);
         var octavesOffsets = new Vector2[octaves];
 
         var offset = new Vector2();
@@ -87,38 +75,51 @@ public class HeightmapGenerator
                 var frequency = 1f;
                 var noiseHeight = 0f;
                 
+                
                 for (var i = 0; i < octaves; i++)
                 {
-                    var sampleX = (x - halfWidth + octavesOffsets[i].X) / scale * frequency * aspect;
-                    var sampleZ = (z - halfHeight + octavesOffsets[i].Y) / scale * frequency * aspect;
+                    var sampleX = (x - halfWidth) / scale * frequency * aspect + octavesOffsets[i].X * frequency;
+                    var sampleZ = (z - halfHeight) / scale * frequency * aspect + octavesOffsets[i].Y * frequency;
                     
-                    var baseHeight = noise.Perlin2(sampleX, sampleZ);
+                    var baseHeight = _noise.GetNoise(sampleX, sampleZ);
                     noiseHeight += baseHeight * amplitude;
                     
-                    //noiseHeight = ridgenoise(noiseHeight);
-                    
                     amplitude *= persistance;
-                    frequency *= lacunarity;
+                    frequency /= lacunarity;
                 }
                 
-                //float detailHeight = detailNoise.GetNoise(x * 0.3f, z * 0.3f) * 2f;
-                
-                if (noiseHeight > maxNoiseHeight)
-                {
-                    maxNoiseHeight = noiseHeight;
-                }
-                else if (noiseHeight <= minNoiseHeight)
-                {
-                    minNoiseHeight = noiseHeight;
-                }
+                /*var nx = x/(float)_width -0.5f;
+                var ny = z/(float)_height -0.5f;
 
-                //noiseHeight = (noiseHeight + 1) * 0.5f;
-
-                var value = _noise.GetNoise(x, z);
+                var e = (1.0f) * anotherNoise(1 * nx, 1 * ny)
+                            + (0.50f) * anotherNoise(2 * nx, 2 * ny)
+                            + (0.25f) * anotherNoise(4 * nx, 4 * ny)
+                            + (0.13f) * anotherNoise(8 * nx, 8 * ny)
+                            + (0.06f) * anotherNoise(16 * nx, 16 * ny)
+                            + (0.03f) * anotherNoise(32 * nx, 32 * ny);
+                e = e / (1.0f + 0.5f + 0.25f + 0.13f + 0.06f + 0.03f);
+                e = (float)Math.Pow(e, 1.5f);
                 
-                value = (value + 1) * 0.5f;
+                
+                var m = (1.0f) * biomeNoiseGen(1 * nx, 1 * ny)
+                        + (0.75f) * biomeNoiseGen(2 * nx, 2 * ny)
+                        + (0.33f) * biomeNoiseGen(4 * nx, 4 * ny)
+                        + (0.33f) * biomeNoiseGen(8 * nx, 8 * ny)
+                        + (0.33f) * biomeNoiseGen(16 * nx, 16 * ny)
+                        + (0.50f) * biomeNoiseGen(32 * nx, 32 * ny);
+                m = m / (1.0f + 0.75f + 0.33f + 0.33f + 0.33f + 0.5f);*/
+                
+                if (noiseHeight > _maxNoiseHeight)
+                {
+                    _maxNoiseHeight = noiseHeight;
+                }
+                else if (noiseHeight <= _minNoiseHeight)
+                {
+                    _minNoiseHeight = noiseHeight;
+                }
 
                 HeightMap[x, z] = noiseHeight;
+                //BiomeMap[x, z] = m;
             }
         }
 
@@ -126,92 +127,75 @@ public class HeightmapGenerator
         {
             for (var x = 0; x < _width; x++)
             {
-                HeightMap[x, z] = MathUtils.InverseLerp(minNoiseHeight, maxNoiseHeight, HeightMap[x, z]);
-                //HeightMap[x, z] = NewNoiseRange(HeightMap[x, z]);
+                HeightMap[x, z] = MathUtils.InverseLerp(_minNoiseHeight, _maxNoiseHeight, HeightMap[x, z]);
             }
         }
-        var min = float.MaxValue;
-        var max = float.MinValue;
-        for (var z = 0; z < _height; z++)
-        {
-            for (var x = 0; x < _width; x++)
-            {
-                var value = HeightMap[x, z];
-                if (value < min) min = value;
-                if (value > max) max = value;
-            }
-        }
+    }
 
+    float anotherNoise(float x, float z)
+    {
+        return _noise.GetNoise(x, z) / 2.0f + 0.5f;
+    }
+
+    float biomeNoiseGen(float x, float z)
+    {
+        return _biomeNoise.GetNoise(x, z) / 2.0f + 0.5f;
+    }
+
+    float RidgeNoise(int x, int z)
+    {
+        return 2 * (0.5f - Math.Abs(0.5f - _noise.GetNoise(x, z)));
+    }
+
+    private void GenerateFalloffMap()
+    {
         for (int z = 0; z < _height; z++)
         {
             for (int x = 0; x < _width; x++)
             {
-                float nx = 2f * (x / (float)_width) - 1;
-                float ny = 2f * (z / (float)_height) - 1;
-                float e = HeightMap[x, z];
-                //e = (float)Math.Pow(e, 3);
-                float d = Distance(nx, ny, DISTANCE_FUNCTIONS.Diagonal);
-
+                var nx = 2f * (x / (float)_width) - 1;
+                var ny = 2f * (z / (float)_height) - 1;
+                
+                var d = Distance(nx, ny, DistanceFunctions.Diagonal);
+                
                 if (d < 0) d = 0;
-                if (d > 1) d = 1;                
-
+                if (d > 1) d = 1;
+                
+                var e = HeightMap[x, z];
                 e = Reshape(e, d);
-                e = MathUtils.Clamp(e, 0.0f, 1.0f);          
 
                 FallOffMap[x, z] = e;
+                BiomeMap[x, z] = Reshape(BiomeMap[x, z], d);
             }
         }
-        
     }
     
-    public float ridgenoise(float value)
-    {
-        var test = 0.5f - value;
-        return 2 * (0.5f - Math.Abs(test));
-    }
-    
-    public float NewNoiseRange(float value)
-    {
-        float oldMax = maxNoiseHeight;
-        float oldMin = minNoiseHeight;
-        float newMax = 1.0f;
-        float newMin = 0.0f;
-        float oldRange = oldMax - oldMin;
-        float newRange = newMax - newMin;
-
-        //float value = elevation.GetData(x, z);
-        float newValue = (((value - oldMin) * newRange) / oldRange) + newMin;
-
-        return newValue;
-    }
-
-
-    public float Distance(float nx, float ny, DISTANCE_FUNCTIONS funcType)
+    private static float Distance(float nx, float ny, DistanceFunctions funcType)
     {
         switch (funcType)
         {
-            case DISTANCE_FUNCTIONS.SquareBump:
+            case DistanceFunctions.SquareBump:
                 return 1 - (1 - nx * nx) * (1 - ny * ny);
-            case DISTANCE_FUNCTIONS.EuclideanSquared:
-                return MathUtils.Min(1, (nx * nx + ny * ny) / MathUtils.Sqrt(2));
-            case DISTANCE_FUNCTIONS.Diagonal:
-                return MathUtils.Max(MathUtils.Abs(nx), MathUtils.Abs(ny));
-            case DISTANCE_FUNCTIONS.Manhattan:
-                return (MathUtils.Abs(nx) + MathUtils.Abs(ny)) / 2;
-            case DISTANCE_FUNCTIONS.Euclidean:
-                return MathUtils.Sqrt(nx * nx + ny * ny) / MathUtils.Sqrt(2);
-            case DISTANCE_FUNCTIONS.Hyperboloid:
-                return (MathUtils.Sqrt(nx * nx + ny * ny + 0.2f * 0.2f) - 0.2f) /
-                       (MathUtils.Sqrt(1 * 1 + 1 * 1 + 0.2f * 0.2f) - 0.2f);
-            case DISTANCE_FUNCTIONS.Blob:
-                return MathUtils.Sqrt(nx * nx + (ny - 0.05f) * (ny - 0.05f)) * MathUtils.Sqrt(2) * 2.7f /
-                       (3 - MathUtils.Sin(5 * MathUtils.Atan2(ny - 0.05f, nx)));
+            case DistanceFunctions.EuclideanSquared:
+                return Math.Min(1f, (nx * nx + ny * ny) / (float)Math.Sqrt(2f));
+            case DistanceFunctions.Diagonal:
+                return Math.Max(Math.Abs(nx), Math.Abs(ny));
+            case DistanceFunctions.Manhattan:
+                return (Math.Abs(nx) + Math.Abs(ny)) / 2f;
+            case DistanceFunctions.Euclidean:
+                return (float)Math.Sqrt(nx * nx + ny * ny) / (float)Math.Sqrt(2f);
+            case DistanceFunctions.Hyperboloid:
+                return (float)(Math.Sqrt(nx * nx + ny * ny + 0.2f * 0.2f) - 0.2f) /
+                       (float)(Math.Sqrt(1 * 1 + 1 * 1 + 0.2f * 0.2f) - 0.2f);
+            case DistanceFunctions.Blob:
+                return (float)(Math.Sqrt(nx * nx + (ny - 0.05f) * (ny - 0.05f)) * Math.Sqrt(2f) * 2.7f /
+                       (3 - Math.Sin(5 * Math.Atan2(ny - 0.05f, nx))));
             default:
                 return 1 - (1 - nx * nx) * (1 - ny * ny);
         }
     }
 
-    public float Reshape(float e, float d)
+    private static float Reshape(float e, float d)
     {
         return MathUtils.Lerp(e, 1 - d, 0.65f);
     }

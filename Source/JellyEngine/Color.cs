@@ -6,6 +6,7 @@ namespace JellyEngine;
 public struct Color
 {
     public static Color Jelly => new(0.468f, 0.177f, 0.741f);
+    public static Color Black => new(0.0f, 0.0f, 0.0f);
     public static Color White => new(1.0f, 1.0f, 1.0f);
 
     public float R { get; set; }

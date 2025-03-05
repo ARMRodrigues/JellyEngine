@@ -20,7 +20,7 @@ public class EntryScene : Scene
         var anotherSpriteEntity = EntityManager.CreateEntity();
         var justanotherSpriteEntity = EntityManager.CreateEntity();
         
-        EntityManager.AddComponent(cameraEntity, new Camera(CameraType.Perspective)
+        EntityManager.AddComponent(cameraEntity, new Camera(CameraType.Perspective, cameraEntity.Id)
         {
             OrthographicSize = 3
         });
@@ -33,20 +33,20 @@ public class EntryScene : Scene
         {
             LocalPosition = new Vector3(0f, 0f, 0)
         });
-        EntityManager.AddComponent(cubeEntity, new MeshProcessor(MeshType.Cube, material));
+        EntityManager.AddComponent(cubeEntity, new MeshRenderer(MeshType.Cube, material));
         
         EntityManager.AddComponent(anotherCubeEntity, new Transform()
         {
             LocalPosition = new Vector3(3f, 3f, 0f)
         });
-        EntityManager.AddComponent(anotherCubeEntity, new MeshProcessor(MeshType.Cube, material));
+        EntityManager.AddComponent(anotherCubeEntity, new MeshRenderer(MeshType.Cube, material));
         
         EntityManager.AddComponent(armCubeEntity, new Transform
         {
             LocalPosition = new Vector3(0f, 0f, -1f),
             LocalScale = new Vector3(0.5f, 0.5f, 1.0f)
         });
-        EntityManager.AddComponent(armCubeEntity, new MeshProcessor(MeshType.Cube));
+        EntityManager.AddComponent(armCubeEntity, new MeshRenderer(MeshType.Cube));
         
         // Sprites debug
         /*EntityManager.AddComponent(spriteEntity, new Transform()

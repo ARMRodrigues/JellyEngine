@@ -25,8 +25,9 @@ public struct MathUtils
     // Min: Retorna o menor valor entre dois números
     public static float Min(float a, float b)
     {
-        return a < b ? a : b;
+        return float.IsNaN(a) || float.IsNaN(b) ? float.NaN : (a < b ? a : b);
     }
+
 
     // Max: Retorna o maior valor entre dois números
     public static float Max(float a, float b)
@@ -44,9 +45,10 @@ public struct MathUtils
     public static float Sqrt(float value)
     {
         if (value < 0) throw new System.ArgumentOutOfRangeException("Não é possível calcular a raiz quadrada de um número negativo.");
+        if (value == 0) return 0; // Evita divisão por zero
 
         float guess = value;
-        float tolerance = 1e-7f; // Precisão desejada
+        float tolerance = 1e-7f;
 
         while (Abs(guess * guess - value) > tolerance)
         {
@@ -244,6 +246,21 @@ public struct MathUtils
 
         // Calcula o parâmetro t
         return (value - a) / (b - a);
+    }
+    
+    public static float SmoothStep(float edge0, float edge1, float x)
+    {
+        x = MathUtils.Clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
+        return x * x * (3 - 2 * x);
+    }
+    
+    public static float Clamp01(float value)
+    {
+        if (value < 0f)
+            return 0f;
+        if (value > 1f)
+            return 1f;
+        return value;
     }
     
     public static float[] ToOpenGLMatrixArray(Matrix4x4 matrix)
