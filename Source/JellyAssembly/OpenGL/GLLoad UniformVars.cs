@@ -44,6 +44,60 @@ namespace JellyAssembly.OpenGL
         {
             _glUniform3f(location, vector.X, vector.Y, vector.Z);
         }
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void glUniform4f_d(int location, float v0, float v1, float v2, float v3);
+        private static glUniform4f_d _glUniform4f;
+
+        /// <summary>
+        /// Specify the value of a vec4 uniform variable for the current program object.
+        /// </summary>
+        /// <param name="location">Specifies the location of the uniform variable to be modified.</param>
+        /// <param name="v0">The first component of the vector.</param>
+        /// <param name="v1">The second component of the vector.</param>
+        /// <param name="v2">The third component of the vector.</param>
+        /// <param name="v3">The fourth component of the vector.</param>
+        public static void Uniform4f(int location, float v0, float v1, float v2, float v3)
+        {
+            _glUniform4f(location, v0, v1, v2, v3);
+        }
+
+        /// <summary>
+        /// Specify the value of a vec4 uniform variable for the current program object using a Vector4.
+        /// </summary>
+        /// <param name="location">Specifies the location of the uniform variable to be modified.</param>
+        /// <param name="vector">The vector containing the values to set.</param>
+        public static void Uniform4f(int location, Vector4 vector)
+        {
+            _glUniform4f(location, vector.X, vector.Y, vector.Z, vector.W);
+        }
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void glUniform4i_d(int location, int v0, int v1, int v2, int v3);
+        private static glUniform4i_d _glUniform4i;
+
+        /// <summary>
+        /// Specify the value of a ivec4 uniform variable for the current program object.
+        /// </summary>
+        /// <param name="location">Specifies the location of the uniform variable to be modified.</param>
+        /// <param name="v0">The first component of the vector.</param>
+        /// <param name="v1">The second component of the vector.</param>
+        /// <param name="v2">The third component of the vector.</param>
+        /// <param name="v3">The fourth component of the vector.</param>
+        public static void Uniform4i(int location, int v0, int v1, int v2, int v3)
+        {
+            _glUniform4i(location, v0, v1, v2, v3);
+        }
+
+        /// <summary>
+        /// Specify the value of a ivec4 uniform variable for the current program object using a custom struct or tuple.
+        /// </summary>
+        /// <param name="location">Specifies the location of the uniform variable to be modified.</param>
+        /// <param name="vector">A tuple or struct containing the four integer values to set.</param>
+        public static void Uniform4i(int location, (int X, int Y, int Z, int W) vector)
+        {
+            _glUniform4i(location, vector.X, vector.Y, vector.Z, vector.W);
+        }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void glUniformMatrix4fv_d(int location, int count, bool transpose, float[] value);

@@ -6,6 +6,19 @@ namespace JellyAssembly.OpenGL
     public partial class GL
     {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate void glActiveTexture_d(uint texture);
+        private static glActiveTexture_d _glActiveTexture;
+
+        /// <summary>
+        /// Selects the active texture unit.
+        /// </summary>
+        /// <param name="texture">Specifies which texture unit to make active (e.g., GL_TEXTURE0).</param>
+        public static void ActiveTexture(TextureUnit texture)
+        {
+            _glActiveTexture((uint)texture);
+        }
+        
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void glGenTextures_d(uint n, uint[] textures);
         private static glGenTextures_d _glGenTextures;
 

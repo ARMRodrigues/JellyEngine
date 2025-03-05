@@ -652,7 +652,8 @@
         ClampToBorderSgis = 33069,
         ClampToEdge = 33071,
         ClampToEdgeSgis = 33071,
-        MirroredRepeat = 33648
+        MirroredRepeat = 33648,
+        MirrorClampToEdge = 34627
     }
 
     public enum TextureMinFilter

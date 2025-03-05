@@ -70,6 +70,8 @@ namespace JellyAssembly.OpenGL
             LoadFunction("glGetUniformLocation", out _glGetUniformLocation!);
             LoadFunction("glUniform1f", out _glUniform1f!);
             LoadFunction("glUniform3f", out _glUniform3f!);
+            LoadFunction("glUniform4f", out _glUniform4f!);
+            LoadFunction("glUniform4i", out _glUniform4i!);
             LoadFunction("glUniformMatrix4fv", out _glUniformMatrix4fv!);
             LoadFunction("glDrawElements", out _glDrawElements!);
             LoadFunction("glEnable", out _glEnable!);
@@ -97,6 +99,8 @@ namespace JellyAssembly.OpenGL
             LoadFunction("glCullFace", out _glCullFace!);
             LoadFunction("glBlendEquationSeparate", out _glBlendEquationSeparate!);
             LoadFunction("glBlendFuncSeparate", out _glBlendFuncSeparate!);
+            LoadFunction("glGenerateMipmap", out _glGenerateMipmap!);
+            LoadFunction("glActiveTexture", out _glActiveTexture!);
         }
 
 
