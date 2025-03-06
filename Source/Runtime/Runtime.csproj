@@ -13,14 +13,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AssetFiles Include="..\JellyEngine\EngineData\**\*" />
+    <EngineAssetFiles Include="..\JellyEngine\EngineData\**\*" />
+    <GameAssetFiles Include="..\JellyGame\Assets\**\*" />
   </ItemGroup>
 
   <!-- Copia os arquivos da pasta Assets para a pasta de saída do Projeto2 preservando a estrutura -->
   <Target Name="CopyAssets" AfterTargets="Build">
     <Copy
-            SourceFiles="@(AssetFiles)"
-            DestinationFiles="@(AssetFiles->'$(OutDir)\EngineData\%(RecursiveDir)%(Filename)%(Extension)')" />
+            SourceFiles="@(EngineAssetFiles)"
+            DestinationFiles="@(EngineAssetFiles->'$(OutDir)\EngineData\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy
+            SourceFiles="@(GameAssetFiles)"
+            DestinationFiles="@(GameAssetFiles->'$(OutDir)\Assets\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
 </Project>
