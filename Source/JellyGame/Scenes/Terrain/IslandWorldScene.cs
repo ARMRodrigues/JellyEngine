@@ -41,7 +41,6 @@ public class IslandWorldScene : Scene
         var mesh = islandGenerator.GenerateTopMesh();
         var terrainEntity = EntityManager.CreateEntity();
         var uvTexture = new Texture("bw.png");
-        var uvTexture2 = new Texture();
         EntityManager.AddComponent(terrainEntity, new Transform());
         EntityManager.AddComponent(terrainEntity, new MeshRenderer(mesh, new Material(uvTexture)));
         

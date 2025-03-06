@@ -1,4 +1,5 @@
 using JellyEngine;
+using JellyGame.Scenes.Map2D;
 using JellyGame.Scenes.Terrain;
 
 namespace JellyGame;
@@ -21,6 +22,6 @@ public class GameManager
             Vsync = true
         };
 
-        GameEntryScene = new IslandWorldScene("IslandWorldScene");
+        GameEntryScene = new MinecraftScene("Scene2D");
     }
 }
