@@ -106,6 +106,22 @@ public class EntityManager
         }
     }
     
+    public IEnumerable<QueryResult<T1, T2, T3>> Query<T1, T2, T3>()
+        where T1 : GameComponent
+        where T2 : GameComponent
+        where T3 : GameComponent
+    {
+        foreach (var (entity, components) in _components)
+        {
+            if (components.TryGetValue(typeof(T1), out var c1) &&
+                components.TryGetValue(typeof(T2), out var c2) &&
+                components.TryGetValue(typeof(T3), out var c3))
+            {
+                yield return new QueryResult<T1, T2, T3>(entity, (T1)c1, (T2)c2, (T3)c3);
+            }
+        }
+    }
+    
     private static int GenerateUniqueId()
     {
         var timestamp = DateTime.UtcNow.Ticks;
