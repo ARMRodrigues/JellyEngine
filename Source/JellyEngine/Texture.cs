@@ -26,8 +26,35 @@ public class Texture : IDisposable
     private bool _disposed = false;
     public int Width { get; private set; }
     public int Height { get; private set; }
-    public WrapMode WrapMode { get; set; } = WrapMode.Repeat;
-    public FilterMode FilterMode { get; set; } = FilterMode.Bilinear;
+    
+    private FilterMode _filterMode = FilterMode.Bilinear;
+    private WrapMode _wrapMode = WrapMode.Repeat;
+
+    public WrapMode WrapMode
+    {
+        get => _wrapMode;
+        set
+        {
+            if (_wrapMode != value)
+            {
+                _wrapMode = value;
+                UpdateWrapSettings();
+            }
+        }
+    }
+    
+    public FilterMode FilterMode
+    {
+        get => _filterMode;
+        set
+        {
+            if (_filterMode != value)
+            {
+                _filterMode = value;
+                UpdateFilterSettings();
+            }
+        }
+    }
 
     private byte[] _pixelData = [];
 
@@ -45,6 +72,7 @@ public class Texture : IDisposable
             Height = image.Height;
             _pixelData = image.Data;
             LoadTextureFromPixelData();
+            Console.WriteLine(FilterMode.ToString());
         }
         catch (Exception)
         {
@@ -120,6 +148,32 @@ public class Texture : IDisposable
         FilterMode.Trilinear => (TextureMinFilter.LinearMipmapLinear, TextureMagFilter.Linear),
         _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, "Invalid filter mode")
     };
+    
+    private void UpdateFilterSettings()
+    {
+        GL.BindTexture(TextureTarget.Texture2D, _textureId);
+        
+        var (minFilter, magFilter) = GetFilterMode(FilterMode);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)minFilter);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)magFilter);
+
+        if (FilterMode == FilterMode.Trilinear)
+        {
+            GL.GenerateMipmap(TextureTarget.Texture2D);
+        }
+        
+        GL.BindTexture(TextureTarget.Texture2D, 0);
+    }
+
+    private void UpdateWrapSettings()
+    {
+        GL.BindTexture(TextureTarget.Texture2D, _textureId);
+
+        var wrapMode = GetWrapMode(WrapMode);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)wrapMode);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)wrapMode);
+
+    }
 
     private void UploadTextureData(TextureTarget target)
     {
