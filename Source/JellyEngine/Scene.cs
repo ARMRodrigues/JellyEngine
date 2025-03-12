@@ -44,6 +44,8 @@ public class Scene(string name)
         {
             gameSystem.Render();
         }
+        
+        EntityManager.ProcessRemovals();
     }
     
     public void Shutdown()

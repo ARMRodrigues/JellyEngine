@@ -4,6 +4,7 @@ public class EntityManager
 {
     private readonly HashSet<int> _usedIds = new HashSet<int>(); //// Para evitar reutilização de IDs
     private readonly Dictionary<Entity, Dictionary<Type, GameComponent>> _components = [];
+    private List<Entity> _toRemove = new();
     
     public Entity CreateEntity()
     {
@@ -19,6 +20,29 @@ public class EntityManager
         var entity = new Entity(id);
         _components[entity] = [];
         return entity;
+    }
+    
+    public void RemoveEntity(Entity entity)
+    {
+        if (!_toRemove.Contains(entity))
+            _toRemove.Add(entity);
+    }
+    
+    public void ProcessRemovals()
+    {
+        foreach (var entity in _toRemove)
+        {
+            if (_components.TryGetValue(entity, out var entityComponents))
+            {
+                foreach (var component in entityComponents.Values)
+                {
+                    if (component is IDisposable disposable)
+                        disposable.Dispose(); // Liberar recursos do componente
+                }
+                _components.Remove(entity); // Remover do sistema de componentes
+            }
+        }
+        _toRemove.Clear(); // Limpar buffer de remoção
     }
     
     public void AddChild(Entity parent, Entity child)
