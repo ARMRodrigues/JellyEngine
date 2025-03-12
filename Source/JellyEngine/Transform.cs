@@ -75,8 +75,9 @@ public class Transform : GameComponent
     public Vector3 Forward => Vector3.Normalize(new Vector3(WorldMatrix.M31, WorldMatrix.M32, WorldMatrix.M33));
     public bool HasTransformValuesChanged { get; private set; }
 
-    public Transform()
+    public Transform(Vector3 position = new Vector3())
     {
+        LocalPosition = position;
         LocalScale = Vector3.One;
         WorldMatrix = LocalMatrix;
     }
