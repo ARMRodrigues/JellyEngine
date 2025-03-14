@@ -1,4 +1,5 @@
 using JellyEngine;
+using JellyGame.Scenes.Cubes;
 using JellyGame.Scenes.Map2D;
 using JellyGame.Scenes.Terrain;
 
@@ -22,6 +23,6 @@ public class GameManager
             Vsync = true
         };
 
-        GameEntryScene = new MinecraftScene("Scene2D");
+        GameEntryScene = new CubesFallingScene("Scene2D");
     }
 }

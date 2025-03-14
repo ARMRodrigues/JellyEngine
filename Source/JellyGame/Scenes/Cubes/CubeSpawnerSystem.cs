@@ -26,10 +26,7 @@ public class CubeSpawnerSystem : GameSystem
         {
             var cubeEntity = _entityManager.CreateEntity();
             var cubeRigidBody = new RigidBody();
-            var cubeTransform = new Transform()
-            {
-                LocalPosition = new Vector3(0f, 50f, 0f),
-            };
+            var cubeTransform = new Transform(new Vector3(0f, 50f, 0f));
             _entityManager.AddComponent(cubeEntity, cubeTransform);
             _entityManager.AddComponent(cubeEntity, new MeshRenderer(MeshType.Cube, _cubeMaterial));
             _entityManager.AddComponent(cubeEntity, cubeRigidBody);

@@ -6,6 +6,7 @@ public class Scene(string name)
     
     public string Name { get; private set; } = name;
     public EntityManager EntityManager { get; } = new();
+    public Physics Physics { get; } = new();
 
     public void AddGameSystem(GameSystem gameSystem)
     {

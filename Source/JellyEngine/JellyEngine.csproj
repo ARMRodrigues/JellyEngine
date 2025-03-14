@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <Folder Include="EngineData\Assets\" CopyToOutputDirectory="PreserveNewest" />
-    <Folder Include="PhysicsSystem\" />
   </ItemGroup>
 
 </Project>
