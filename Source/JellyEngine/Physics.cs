@@ -62,6 +62,29 @@ public class Physics
             
             body.Pose = _simulation.Bodies.GetBodyReference(rigidBody.BodyHandle).Pose;
         }
+        else if (body is CharacterController characterController)
+        {
+            // Crie uma forma de cápsula para o personagem
+            var capsuleShape = new Capsule(characterController.Radius, characterController.Height);
+            var shapeHandle = _simulation.Shapes.Add(capsuleShape);
+
+            // Calcule a inércia com base na forma e massa
+            var inertia = capsuleShape.ComputeInertia(characterController.Mass);
+
+            // Configure a descrição do corpo físico
+            var pose = new RigidPose(transform.LocalPosition, Quaternion.Identity);
+            var velocity = new BodyVelocity();
+            var collidable = new CollidableDescription(shapeHandle, 0.1f);
+            var activityDescription = new BodyActivityDescription(0.01f);
+
+            var bodyDescription = BodyDescription.CreateDynamic(pose, velocity, inertia, collidable, activityDescription);
+
+            // Adicione o corpo à simulação
+            characterController.BodyHandle = _simulation.Bodies.Add(bodyDescription);
+
+            // Ative o corpo (opcional, dependendo do comportamento desejado)
+            _simulation.Awakener.AwakenBody(characterController.BodyHandle);
+        }
     }
 
     public void Awake(BodyHandle bodyHandle)

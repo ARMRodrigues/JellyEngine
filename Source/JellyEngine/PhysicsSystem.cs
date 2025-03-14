@@ -26,6 +26,13 @@ public class PhysicsSystem (EntityManager entityManager, Physics physics) : Game
             transform.LocalPosition = body.Pose.Position;
             transform.LocalRotation = body.Pose.Orientation;
         }
+        
+        foreach (var (transform, characterController) in _entityManager.Query<Transform, CharacterController>() )
+        {
+            var body = _physics.GetBodyReference(characterController.BodyHandle);
+            transform.LocalPosition = body.Pose.Position;
+            transform.LocalRotation = body.Pose.Orientation;
+        }
     }
 
     public override void Shutdown()

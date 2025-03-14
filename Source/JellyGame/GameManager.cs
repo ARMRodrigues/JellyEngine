@@ -2,6 +2,7 @@ using JellyEngine;
 using JellyGame.Scenes.Cubes;
 using JellyGame.Scenes.Map2D;
 using JellyGame.Scenes.Terrain;
+using JellyGame.Scenes.WalkAround;
 
 namespace JellyGame;
 
@@ -23,6 +24,6 @@ public class GameManager
             Vsync = true
         };
 
-        GameEntryScene = new CubesFallingScene("Scene2D");
+        GameEntryScene = new WalkAroundScene("Scene2D");
     }
 }
