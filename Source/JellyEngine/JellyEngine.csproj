@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BepuPhysics" Version="2.4.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.6" />
   </ItemGroup>
 
@@ -20,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="EngineData\Assets\" CopyToOutputDirectory="PreserveNewest" />
+    <Folder Include="PhysicsSystem\" />
   </ItemGroup>
 
 </Project>
