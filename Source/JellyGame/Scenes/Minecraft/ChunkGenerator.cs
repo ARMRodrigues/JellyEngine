@@ -23,18 +23,80 @@ public class ChunkGenerator
 
     private void GenerateTerrain()
     {
-        // Exemplo: Gera um terreno plano na altura Y = 8
+        FastNoiseLite noise = new FastNoiseLite();
+        noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+        noise.SetFrequency(3f);
+        noise.SetFractalType(FastNoiseLite.FractalType.None);
+        
+        var scale = 250f;
+        var octaves = 5;
+        var persistance = 0.5f;
+        var lacunarity = 0.4f;
+        
+        var octavesOffsets = new Vector2[octaves];
+
+        var offset = new Vector2();
+        
+        var prng = new Random();
+        
+        for (var i = 0; i < octaves; i++)
+        {
+            var offsetX = prng.Next(-100000, 100000) + offset.X/2;
+            var offsetY = prng.Next(-100000, 100000) + offset.Y/2;
+            octavesOffsets[i] = new Vector2(offsetX, offsetY);
+        }
+
+        int worldHeight = ChunkSize;
+
         for (int x = 0; x < ChunkSize; x++)
         {
             for (int z = 0; z < ChunkSize; z++)
             {
+                var amplitude = 1f;
+                var frequency = 1f;
+                var noiseHeight = 0f;
+                
+                for (var i = 0; i < octaves; i++)
+                {
+                    var sampleX = (ChunkPosition.X * ChunkSize + x) / scale * frequency + octavesOffsets[i].X * frequency;
+                    var sampleZ = (ChunkPosition.Y * ChunkSize + z) / scale * frequency + octavesOffsets[i].Y * frequency;
+                    
+                    var baseHeight = noise.GetNoise(sampleX, sampleZ);
+                    noiseHeight += baseHeight * amplitude;
+                    
+                    amplitude *= persistance;
+                    frequency /= lacunarity;
+                }
+                
+                ///float height = (noise.GetNoise(ChunkPosition.X * ChunkSize + x, ChunkPosition.Y * ChunkSize + z) + 1) * 0.5f; // Normaliza para [0,1]
+                int terrainHeight = (int)(noiseHeight * worldHeight * 0.6f) + 4; // Ajusta a altura do terreno
+
                 for (int y = 0; y < ChunkSize; y++)
                 {
-                    _blocks[x, y, z] = BlockType.Solid;
+                    if (y <= terrainHeight)
+                        _blocks[x, y, z] = BlockType.Solid;
+                    else
+                        _blocks[x, y, z] = BlockType.Air;
                 }
             }
         }
     }
+    
+    private float GetTerrainHeight(float x, float z)
+    {
+        var noise = new FastNoiseLite();
+        noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+    
+        float frequency = 0.01f;
+        float amplitude = 8f;
+    
+        float height = noise.GetNoise(x * frequency, z * frequency) * amplitude;
+        height += noise.GetNoise(x * (frequency * 2), z * (frequency * 2)) * (amplitude / 2);
+        height += noise.GetNoise(x * (frequency * 4), z * (frequency * 4)) * (amplitude / 4);
+    
+        return height;
+    }
+
 
     private void GenerateMesh()
     {
@@ -79,12 +141,12 @@ public class ChunkGenerator
         Vector3 neighbor = GetNeighborPosition(x, y, z, direction);
         bool isNeighborSolid = IsInsideBounds(neighbor) && _blocks[(int)neighbor.X, (int)neighbor.Y, (int)neighbor.Z] == BlockType.Solid;
 
-        if (!isNeighborSolid) // Só adiciona a face se o bloco vizinho for ar (vazio)
+        if (!isNeighborSolid)
         {
             foreach (var v in faceVertices)
                 positions.Add(v);
             
-            Vector2[] faceUVs = GetFaceUVs(direction, BlockType.Solid); // Supondo que o bloco seja do tipo Solid (grama)
+            Vector2[] faceUVs = GetFaceUVs(direction, BlockType.Solid);
             foreach (var uv in faceUVs)
                 uvs.Add(uv);
             
@@ -129,13 +191,10 @@ public class ChunkGenerator
     
     private Vector2[] GetFaceUVs(Direction direction, BlockType blockType)
     {
-        // Suponha que o texture atlas seja 4x4, e cada textura ocupe 0.25x0.25 no espaço UV
         float tileSize = 0.25f;
         
-        Random random = new Random();
-        int textureIndex = random.Next(0, 16);
-
-        // Suponha que a textura de grama seja a primeira textura no atlas (índice 0)
+        int textureIndex = 13;
+        
         //int textureIndex = (blockType == BlockType.Solid) ? 0 : 1; // Aqui você pode mapear outros tipos de blocos
 
         int row = textureIndex / 4;

@@ -10,6 +10,7 @@ public class GameApplication
     private readonly RenderContext _rendererContext;
     private readonly SceneManager _sceneManager;
     private readonly InputSystemManager _inputSystemManager;
+    private readonly GameTime _gameTime;
 
     public GameApplication(NativeWindowSettings nativeWindowSettings)
     {
@@ -26,6 +27,7 @@ public class GameApplication
         
         _sceneManager = new SceneManager();
         _inputSystemManager = InputSystemManager.Instance;
+        _gameTime = new GameTime();
     }
 
     public void Play(Scene scene)
@@ -41,6 +43,7 @@ public class GameApplication
         
         while (_rendererContext.IsWindowOpen())
         {
+            _gameTime.Update();
             _inputSystemManager.UpdateInputStates(InputBackend.GetKeyboardState(), InputBackend.GetMouseState());
             _rendererContext.BeginRender();
             _sceneManager.UpdateActiveScene();

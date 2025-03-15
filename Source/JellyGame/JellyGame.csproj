@@ -10,9 +10,5 @@
     <ProjectReference Include="..\JellyEngine\JellyEngine.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Assets" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
 
 </Project>

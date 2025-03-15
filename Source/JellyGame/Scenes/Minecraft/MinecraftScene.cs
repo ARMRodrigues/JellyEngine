@@ -30,9 +30,12 @@ public class MinecraftScene : Scene
             LocalScale = new Vector3(3, 1, 3)
         });
         EntityManager.AddComponent(anotherCubeReferenceEntity, new MeshRenderer(MeshType.Cube, new Material()));
-        
+
+        var world = new World();
+        var chunkBuilder = new ChunkBuilder(world.ChunkSize);
         var chunkEntity = EntityManager.CreateEntity();
-        EntityManager.AddComponent(chunkEntity, new ChunkComponent());
+        EntityManager.AddComponent(chunkEntity, new Transform());
+        EntityManager.AddComponent(chunkEntity, new MeshRenderer(chunkBuilder.Mesh , new Material(new Texture("Assets/Textures/Blocks.png"))));
         
         var playerEntity = EntityManager.CreateEntity();
         EntityManager.AddComponent(playerEntity, new Transform());
@@ -42,6 +45,6 @@ public class MinecraftScene : Scene
         AddGameSystem(new TransformSystem(EntityManager));
         AddGameSystem(new MeshRendererSystem(EntityManager));
         AddGameSystem(new FreeCameraControllerSystem(EntityManager));
-        AddGameSystem(new ChunkSystem(EntityManager));
+        //AddGameSystem(new ChunkSystem(EntityManager));
     }
 }
