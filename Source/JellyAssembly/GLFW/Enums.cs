@@ -14,6 +14,7 @@
         Visible = 0x00020004,
         Decorated = 0x00020005,
         OpenGLProfile = 0x00022008,
+        Samples = 0x0002100D,
     }
 
     public enum GLFWAPI

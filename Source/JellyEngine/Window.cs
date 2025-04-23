@@ -52,6 +52,8 @@ public class Window : IDisposable
         GLFW.WindowHint(WindowHint.Visible, GLFWBool.False);
         GLFW.WindowHint(WindowHint.Decorated, GLFWBool.True);
 
+        GLFW.WindowHint(WindowHint.Samples, 4);
+
         // Configuração específica para cada backend pode ser feita aqui.
         if (_currentGraphicsAPI == GraphicsAPI.OpenGL)
         {

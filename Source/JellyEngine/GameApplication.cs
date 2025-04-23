@@ -44,12 +44,13 @@ public class GameApplication
         while (_rendererContext.IsWindowOpen())
         {
             _gameTime.Update();
-            _inputSystemManager.UpdateInputStates(InputBackend.GetKeyboardState(), InputBackend.GetMouseState());
-            _rendererContext.BeginRender();
+            _inputSystemManager.UpdateInputStates(InputBackend.GetKeyboardState(), InputBackend.GetMouseState());            
             _sceneManager.UpdateActiveScene();
             _sceneManager.FixedUpdate();
+            _rendererContext.BeginRender();
             _sceneManager.RenderActiveScene();
             _rendererContext.EndRender();
+            _rendererContext.ApplyPostProcessing();
             _inputSystemManager.ResetState();
             _rendererContext.PollEvents();
         }

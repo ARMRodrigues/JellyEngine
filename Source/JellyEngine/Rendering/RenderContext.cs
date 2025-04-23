@@ -24,6 +24,11 @@ public class RenderContext
         _renderer.EndRender();
     }
 
+    public void ApplyPostProcessing()
+    {
+        _renderer.RenderFramebufferToScreen();
+    }
+
     public void PollEvents()
     {
         _renderer.PollEvents();
