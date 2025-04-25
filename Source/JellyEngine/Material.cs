@@ -5,6 +5,7 @@ namespace JellyEngine;
 
 public class Material : IDisposable
 {
+    public string _name;
     private int _modelLocation;
     private int _viewLocation;
     private int _projectionLocation;
@@ -36,32 +37,36 @@ public class Material : IDisposable
         set => _color = value;
     }
     
-    public Material()
+    public Material(string name = "Material")
     {
+        _name = name;
         _shader = new Shader();
         _albedoTexture = new Texture();
 
         GetUniforms();
     }
 
-    public Material(Texture albedo)
+    public Material(Texture albedo, string name = "Material")
     {
+        _name = name;
         _shader = new Shader();
         _albedoTexture = albedo ?? throw new ArgumentNullException(nameof(albedo));
         
         GetUniforms();
     }
     
-    public Material(Shader shader)
+    public Material(Shader shader, string name = "Material")
     {
+        _name = name;
         _shader = shader ?? throw new ArgumentNullException(nameof(shader));
         _albedoTexture = new Texture();
         
         GetUniforms();
     }
     
-    public Material(Shader shader, Texture? albedo = null)
+    public Material(Shader shader, Texture? albedo = null, string name = "Material")
     {
+        _name = name;
         _shader = shader ?? throw new ArgumentNullException(nameof(shader));
         _albedoTexture = albedo ?? throw new ArgumentNullException(nameof(albedo));
         
