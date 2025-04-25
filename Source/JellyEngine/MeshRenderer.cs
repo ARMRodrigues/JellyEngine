@@ -7,20 +7,29 @@ public class MeshRenderer : Renderer, IDisposable
     private uint _vao, _vbo, _ebo;
     private int _indicesSize;
     private bool _disposed = false;
-    private Material _material;
-    
-    public Material Material => _material;
+    private List<Material> _materials = [];
+    public IReadOnlyList<Material> Materials => _materials;
+    private Mesh _mesh;
 
     public MeshRenderer(Mesh mesh)
     {
+        _mesh = mesh;
         InitializeComp(mesh);
-        _material = new Material();
+        _materials.Add(new Material());
     }
-    
+
     public MeshRenderer(Mesh mesh, Material material)
     {
+        _mesh = mesh;
         InitializeComp(mesh);
-        _material = material;
+        _materials.Add(material);
+    }
+
+    public MeshRenderer(Mesh mesh, List<Material> materials)
+    {
+        _mesh = mesh;
+        InitializeComp(mesh);
+        _materials = materials;
     }
 
     private void InitializeComp(Mesh mesh)
@@ -71,26 +80,42 @@ public class MeshRenderer : Renderer, IDisposable
     {
         GL.Enable(EnableCap.DepthTest);
         GL.DepthFunc(DepthFunction.Lequal);
-        
+
         GL.Enable(EnableCap.CullFace);
         GL.CullFace(CullFaceMode.Back);
-        
-        Material.Use();
+
+        //Material.Use();
     }
 
     private void EndRender()
     {
-        Material.Unbind();
+        //Material.Unbind();
     }
 
-    public void Render()
+    public void Render(Transform meshTransform, Transform cameraTransform)
     {
         BeginRender();
-        
+
         GL.BindVertexArray(_vao);
-        GL.DrawElements(PrimitiveType.Triangles, _indicesSize, DrawElementsType.UnsignedInt, 0);
-        GL.BindVertexArray(0);
-        
+
+        var submeshes = _mesh.GetSubMeshesOrDefault();
+
+        foreach (var sub in submeshes)
+        {
+            var environment = SceneEnvironment.Main;
+            
+            var material = _materials[sub.MaterialId];
+            material.Use();
+            material.SetMatrices(meshTransform.WorldMatrix, Camera.Main.ViewMatrix, Camera.Main.ProjectionMatrix);
+            material.SetLightData(cameraTransform.Position, environment.DirectionalLight);
+
+            GL.DrawElements(
+                PrimitiveType.Triangles,
+                sub.IndexCount,
+                DrawElementsType.UnsignedInt,
+                (IntPtr)(sub.IndexStart * sizeof(uint)));
+        }
+
         EndRender();
     }
 
