@@ -2,6 +2,7 @@ using JellyEngine;
 using JellyGame.Scenes.Cubes;
 using JellyGame.Scenes.Guild;
 using JellyGame.Scenes.Map2D;
+using JellyGame.Scenes.MeshLoader;
 using JellyGame.Scenes.Terrain;
 using JellyGame.Scenes.WalkAround;
 
@@ -25,6 +26,10 @@ public class GameManager
             Vsync = true
         };
 
+<<<<<<< HEAD
         GameEntryScene = new GuildManager("Scene2D");
+=======
+        GameEntryScene = new MeshLoaderScene("Scene2D");
+>>>>>>> 094e66c0731709164f7d753bebaf00d68a27135d
     }
 }

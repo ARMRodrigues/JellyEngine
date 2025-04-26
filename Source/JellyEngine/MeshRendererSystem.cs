@@ -16,10 +16,10 @@ public class MeshRendererSystem(EntityManager entityManager) : GameSystem
             var cameraTransform = _entityManager.GetComponent<Transform>(new Entity(Camera.Main.CameraEntityId));
             var environment = SceneEnvironment.Main;
             
-            meshRenderer.Material.Use();
-            meshRenderer.Material.SetMatrices(transform.WorldMatrix, Camera.Main.ViewMatrix, Camera.Main.ProjectionMatrix);
-            meshRenderer.Material.SetLightData(cameraTransform.Position, environment.DirectionalLight);
-            meshRenderer.Render();
+            //meshRenderer.Material.Use();
+            //meshRenderer.Material.SetMatrices(transform.WorldMatrix, Camera.Main.ViewMatrix, Camera.Main.ProjectionMatrix);
+            //meshRenderer.Material.SetLightData(cameraTransform.Position, environment.DirectionalLight);
+            meshRenderer.Render(transform, cameraTransform);
         }
     }
 
