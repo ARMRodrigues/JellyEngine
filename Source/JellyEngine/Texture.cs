@@ -72,7 +72,6 @@ public class Texture : IDisposable
             Height = image.Height;
             _pixelData = image.Data;
             LoadTextureFromPixelData();
-            Console.WriteLine(FilterMode.ToString());
         }
         catch (Exception)
         {

@@ -5,6 +5,8 @@ namespace JellyEngine;
 
 public struct Color
 {
+    private static readonly Random _random = new Random();
+
     public static Color Jelly => new(0.468f, 0.177f, 0.741f);
     public static Color Black => new(0.0f, 0.0f, 0.0f);
     public static Color White => new(1.0f, 1.0f, 1.0f);
@@ -75,5 +77,14 @@ public struct Color
             a.B + (b.B - a.B) * t,
             a.A + (b.A - a.A) * t
         );
+    }
+
+    public static Color Random()
+    {
+        float r = (float)_random.NextDouble() * 0.7f + 0.3f;
+        float g = (float)_random.NextDouble() * 0.7f + 0.3f;
+        float b = (float)_random.NextDouble() * 0.7f + 0.3f;
+
+        return new Color(r, g, b);
     }
 }

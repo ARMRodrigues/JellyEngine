@@ -55,8 +55,8 @@ public class IslandWorldScene : Scene
         EntityManager.AddComponent(bottomMeshEntity, new MeshProcessor(bottomMesh, new Material(uvTexture)));*/
         
         var waterMeshEntity = EntityManager.CreateEntity();
-        var waterlevel = 0.02f * 32f;
-        var waterMaterial = new Material() { Color = new Color(1, 0, 0, 0.5f)};
+        var waterlevel = 0.35f * 16f;
+        var waterMaterial = new Material() { Color = new Color(15,94,156, 0.5f)};
         EntityManager.AddComponent(waterMeshEntity, new Transform()
         {
             LocalPosition = new Vector3(0f, waterlevel, 0f),

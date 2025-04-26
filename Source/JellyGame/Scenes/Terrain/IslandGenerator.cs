@@ -15,9 +15,9 @@ public class IslandGenerator
     };
 
     public int GridSize { get; set; } = 200;
-    public int Width { get; set; } = 100;
-    public int Height { get; set; } = 100;
-    public float HeightMultiplier { get; set; } = 32f;
+    public int Width { get; set; } = 600;
+    public int Height { get; set; } = 600;
+    public float HeightMultiplier { get; set; } = 16f;
     public float EdgeHeight { get; set; } = -3f;
     
     public Terrain Terrain { get; set; }

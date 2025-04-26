@@ -33,6 +33,28 @@ public class Scene2D : Scene
             LocalScale = Vector3.One * 3f
         });
         EntityManager.AddComponent(spriteEntity, new SpriteRenderer(new Sprite(spriteTexture)));
+        
+        var spriteEntity2 = EntityManager.CreateEntity();
+        EntityManager.AddComponent(spriteEntity2, new Transform()
+        {
+            LocalPosition = new Vector3(-0.5f, 0, 1),
+            LocalScale = Vector3.One * 3f
+        });
+        EntityManager.AddComponent(spriteEntity2, new SpriteRenderer(new Sprite(spriteTexture)
+        {
+            Color = new Color(1, 0, 0, 1)
+        }));
+        
+        var spriteEntity3 = EntityManager.CreateEntity();
+        EntityManager.AddComponent(spriteEntity3, new Transform()
+        {
+            LocalPosition = new Vector3(0.5f, 0, -1),
+            LocalScale = Vector3.One * 3f
+        });
+        EntityManager.AddComponent(spriteEntity3, new SpriteRenderer(new Sprite(spriteTexture)
+        {
+            Color = new Color(0, 1, 0, 1)
+        }));
             
         AddGameSystem(new CameraSystem(EntityManager));
         //AddGameSystem(new SceneEnvironmentRendererSystem());

@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using JellyGame.Scenes.Map2D;
 
 namespace JellyEngine;
 
@@ -63,7 +64,7 @@ public class ChunkSystem : GameSystem
                     var chunkEntity = _entityManager.CreateEntity();
                     _entityManager.AddComponent(chunkEntity, new Transform(new Vector3(worldX * chunkComponent.ChunkSize, 0, worldZ * chunkComponent.ChunkSize)));
                     var chunckMeshRenderer =
-                        new MeshRenderer(new ChunkGenerator(chunkComponent.StartChunkPosition).Mesh, _chunkMaterial);
+                        new MeshRenderer(new ChunkGenV2(chunkComponent.StartChunkPosition).Mesh, _chunkMaterial);
                     _entityManager.AddComponent(chunkEntity, chunckMeshRenderer);
                     newChunks[chunkKey] = chunkEntity;
                 }

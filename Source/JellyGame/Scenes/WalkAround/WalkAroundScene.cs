@@ -17,7 +17,7 @@ public class WalkAroundScene : Scene
         EntityManager.AddComponent(cameraEntity, new Camera(CameraType.Perspective, cameraEntity.Id));
         EntityManager.AddComponent(cameraEntity, new Transform
         {
-            LocalPosition = new Vector3(0f, 13f, 26f),
+            LocalPosition = new Vector3(0f, 15f, 25f),
             LocalEulerAngles = new Vector3(-30f, 0f, 0f)
         });
         
@@ -27,12 +27,12 @@ public class WalkAroundScene : Scene
         {
             LocalScale = new Vector3(20, 1, 20)
         };
-        var planeMaterial = new Material(new Texture("Assets/Textures/Dirt.png")
+        var planeMaterial = new Material(new Texture("Assets/Textures/Grass.jpg")
         {
-            FilterMode = FilterMode.Point
+            FilterMode = FilterMode.Bilinear
         });
         EntityManager.AddComponent(planeEntity, planeEntityTransform);
-        EntityManager.AddComponent(planeEntity, new MeshRenderer(MeshType.Plane, planeMaterial));
+        EntityManager.AddComponent(planeEntity, new MeshRenderer(MeshType.Cube, planeMaterial));
         EntityManager.AddComponent(planeEntity, planeStaticBody);
         Physics.AddBody(planeStaticBody, planeEntityTransform);
         
@@ -90,14 +90,14 @@ public class WalkAroundScene : Scene
         AddGameSystem(new SceneEnvironmentRendererSystem());
         AddGameSystem(new TransformSystem(EntityManager));
         AddGameSystem(new MeshRendererSystem(EntityManager));
-        //AddGameSystem(new PhysicsSystem(EntityManager, Physics));
-        AddGameSystem(new FreeCameraControllerSystem(EntityManager));
+        AddGameSystem(new PhysicsSystem(EntityManager, Physics));
+        //AddGameSystem(new FreeCameraControllerSystem(EntityManager));
         AddGameSystem(new PlayerMovementSystem(EntityManager));
-        //AddGameSystem(new CubeSpawnerSystem(EntityManager, Physics));
+        AddGameSystem(new CubeSpawnerSystem(EntityManager, Physics));
         
-        Input.RegisterAction(new InputAction("MoveForward") { Keys = { KeyCode.Up } });
-        Input.RegisterAction(new InputAction("MoveRight") { Keys = { KeyCode.Right } });
-        Input.RegisterAction(new InputAction("MoveBackward") { Keys = { KeyCode.Down } });
-        Input.RegisterAction(new InputAction("MoveLeft") { Keys = { KeyCode.Left } });
+        Input.RegisterAction(new InputAction("MoveForward") { Keys = { KeyCode.W } });
+        Input.RegisterAction(new InputAction("MoveRight") { Keys = { KeyCode.D } });
+        Input.RegisterAction(new InputAction("MoveBackward") { Keys = { KeyCode.S } });
+        Input.RegisterAction(new InputAction("MoveLeft") { Keys = { KeyCode.A } });
     }
 }

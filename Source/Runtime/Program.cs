@@ -5,7 +5,7 @@ using JellyGame;
 
 var nativeWindowSettings = new NativeWindowSettings
 {
-    Size = new Vector2(800, 600),
+    Size = new Vector2(1280, 720),
     Vsync = true,
     Title = "Jelly Engine",
     GraphicsAPI = GraphicsAPI.OpenGL

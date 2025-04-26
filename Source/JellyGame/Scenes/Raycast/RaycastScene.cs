@@ -14,11 +14,11 @@ public class RaycastScene : Scene
         EntityManager.AddComponent(cameraEntity, new Camera(CameraType.Perspective, cameraEntity.Id));
         EntityManager.AddComponent(cameraEntity, new Transform
         {
-            LocalPosition = new Vector3(0f, 5f, 5),
+            LocalPosition = new Vector3(0f, 8f, 8f),
             LocalEulerAngles = new Vector3(-45f, 0f, 0f),
         });
 
-        var texture = new Texture("Check.png");
+        var texture = new Texture("Assets/Textures/Check.png");
         var planeEntity = EntityManager.CreateEntity();
         EntityManager.AddComponent(planeEntity, new Transform()
         {
