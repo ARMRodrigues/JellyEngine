@@ -26,10 +26,7 @@ public class GameManager
             Vsync = true
         };
 
-<<<<<<< HEAD
-        GameEntryScene = new GuildManager("Scene2D");
-=======
         GameEntryScene = new MeshLoaderScene("Scene2D");
->>>>>>> 094e66c0731709164f7d753bebaf00d68a27135d
+
     }
 }
