@@ -106,6 +106,7 @@ public class OBJParser
     {
         using var reader = new StreamReader(mtlPath);
         Material? current = null;
+        string? currentName = null;
 
         while (!reader.EndOfStream)
         {
@@ -118,9 +119,17 @@ public class OBJParser
             switch (parts[0])
             {
                 case "newmtl":
-                    current = new Material(parts[1]);
-                    if (materialMap.TryGetValue(parts[1], out int id))
-                        materials[id] = current;
+                    currentName = parts[1];
+                    if (materialMap.TryGetValue(currentName, out int id))
+                    {
+                        current = materials[id]; // Reutiliza material existente
+                    }
+                    else
+                    {
+                        current = new Material(currentName);
+                        materialMap[currentName] = materials.Count;
+                        materials.Add(current);
+                    }
                     break;
 
                 case "Kd":
@@ -128,12 +137,11 @@ public class OBJParser
                     {
                         Vector3 colorVec = ParseVector3(parts);
                         current.Color = new Color(colorVec.X, colorVec.Y, colorVec.Z);
-                        Console.WriteLine($"Minha cor é: {current.Color.ToVector3()}");
                     }
                     break;
 
                 case "map_Kd":
-                    if (current != null)
+                    if (current != null && parts.Length >= 2)
                     {
                         var texturePath = Path.Combine(Path.GetDirectoryName(mtlPath)!, parts[1]);
                         current.Albedo = new Texture(texturePath);
