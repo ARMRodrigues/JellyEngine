@@ -26,6 +26,14 @@ public partial class JellyNative
         => EnginePoll(handle);
     
     // ──────────────────────────────────────────────────────────────────────────
+    private static readonly EngineRenderDelegate EngineRender;
+    /// <summary>
+    /// Polls events and advances one frame of the native engine.
+    /// </summary>
+    public static void Render(IntPtr handle)
+        => EngineRender(handle);
+    
+    // ──────────────────────────────────────────────────────────────────────────
     private static readonly EngineShutdownDelegate EngineShutdown;
     /// <summary>
     /// Shuts down the engine and releases all associated native resources.

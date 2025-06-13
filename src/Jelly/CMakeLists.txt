@@ -30,9 +30,12 @@ set(HEADERS
     ${INCLUDE_DIR}/Graphics/GraphicsApiException.h
     ${INCLUDE_DIR}/Graphics/IGraphicsAPI.h
     ${INCLUDE_DIR}/Graphics/GraphicsAPIFactory.h
-    ${INCLUDE_DIR}/Graphics/VulkanGraphicsAPI.h
+    ${INCLUDE_DIR}/Graphics/Vulkan/QueueFamilyIndices.h
+    ${INCLUDE_DIR}/Graphics/Vulkan/SwapChainSupportDetails.h
+    ${INCLUDE_DIR}/Graphics/Vulkan/VulkanGraphicsAPI.h
     ${INCLUDE_DIR}/Window/WindowSettings.h
     ${INCLUDE_DIR}/Window/IWindowSystem.h
+    ${INCLUDE_DIR}/Window/INativeWindowHandleProvider.h
     ${INCLUDE_DIR}/Window/GLFWindowSystem.h
     ${API_HEADER_FILES}
     ${INCLUDE_DIR}/JellyEngine.h
@@ -41,11 +44,16 @@ set(HEADERS
 set(SRC_FILES
     ${SRC_DIR}/Logger.cpp
     ${SRC_DIR}/Window/GLFWindowSystem.cpp
+    ${SRC_DIR}/Graphics/Vulkan/VulkanGraphicsAPI.cpp
+    ${SRC_DIR}/Graphics/Vulkan/VulkanGraphicsAPIHelpers.cpp
     ${API_SOURCE_FILES}
     ${SRC_DIR}/JellyEngine.cpp
 )
 
 add_library(Jelly SHARED ${SRC_FILES} ${HEADERS})
+
+find_package(Vulkan REQUIRED)
+target_link_libraries(Jelly PRIVATE Vulkan::Vulkan)
 
 target_include_directories(Jelly
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include

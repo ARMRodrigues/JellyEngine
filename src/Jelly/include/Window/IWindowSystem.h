@@ -10,6 +10,9 @@ public:
     /// Creates a window using the given settings.
     virtual void CreateWindow(const WindowSettings& settings) = 0;
 
+    /// Makes the window visible. Useful to delay showing until initialization is complete.
+    virtual void ShowWindow() = 0;
+
     /// Returns true if the window is still open.
     virtual bool IsWindowOpen() = 0;
 

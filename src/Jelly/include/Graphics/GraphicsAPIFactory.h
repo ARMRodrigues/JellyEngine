@@ -4,7 +4,7 @@
 
 #include "GraphicsAPIType.h"
 #include "IGraphicsAPI.h"
-#include "VulkanGraphicsAPI.h"
+#include "Vulkan/VulkanGraphicsAPI.h"
 
 /// Factory responsible for creating IGraphicsAPI instances based on enum type.
 class GraphicsAPIFactory {

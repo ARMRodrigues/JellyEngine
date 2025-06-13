@@ -26,7 +26,7 @@ namespace Jelly.Assembly
     /// <summary>
     /// Indicates whether a previously created engine instance is still running.
     /// </summary>
-    /// <param name="handle">Native engine handle returned by <see cref="EngineCreateDelegate"/>.</param>
+    /// <param name="handle">The native engine handle representing the current engine instance.</param>
     /// <returns><c>true</c> if the engine main loop is active; otherwise <c>false</c>.</returns>
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal delegate bool EngineIsRunningDelegate(IntPtr handle);
@@ -41,9 +41,17 @@ namespace Jelly.Assembly
     
     // ──────────────────────────────────────────────────────────────────────────
     /// <summary>
+    /// Delegate for invoking a single render pass on the native engine.
+    /// </summary>
+    /// <param name="handle">The native engine handle representing the current engine instance.</param>
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal delegate void EngineRenderDelegate(IntPtr handle);
+    
+    // ──────────────────────────────────────────────────────────────────────────
+    /// <summary>
     /// Shuts down the engine and releases all associated resources.
     /// </summary>
-    /// <param name="handle">Native engine handle returned by <see cref="EngineCreateDelegate"/>.</param>
+    /// <param name="handle">The native engine handle representing the current engine instance.</param>
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal delegate void EngineShutdownDelegate(IntPtr handle);
     

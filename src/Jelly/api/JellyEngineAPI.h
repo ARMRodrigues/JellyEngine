@@ -2,8 +2,6 @@
 
 #include "JellyExport.h"
 #include "JellyTypes.h"
-#include "JellyEngine.h"
-#include "Window/WindowSettings.h"
 
 JELLY_API_BEGIN
 
@@ -15,6 +13,9 @@ JELLY_API bool jellyEngineIsRunning(JellyEngineHandle handle);
 
 // Polls input and window events.
 JELLY_API void jellyEnginePoll(JellyEngineHandle handle);
+
+// Renders a single frame by beginning and ending the graphics API frame.
+JELLY_API void jellyEngineRender(JellyEngineHandle handle);
 
 // Shuts down the engine and releases all associated resources.
 JELLY_API void jellyEngineShutdown(JellyEngineHandle handle);

@@ -24,8 +24,7 @@ public class JellyApplication
             windowSettings.Height,
             windowSettings.Vsync,
             windowSettings.Title,
-            "Vulkan"); // Currently hard-wired to Vulkan; expose later if needed.
-
+            "Vulkan");
         if (_jellyHandle == IntPtr.Zero)
         {
             Environment.Exit(1);
@@ -46,7 +45,11 @@ public class JellyApplication
     private void Lifecycle()
     {
         while (JellyNative.IsRunning(_jellyHandle))
+        {
             JellyNative.Poll(_jellyHandle);
+            JellyNative.Render(_jellyHandle);
+        }
+            
     }
 
     // ──────────────────────────────────────────────────────────────────────────

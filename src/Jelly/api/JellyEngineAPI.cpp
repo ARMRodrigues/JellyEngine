@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 
+#include "JellyEngine.h"
 #include "Graphics/GraphicsAPIType.h"
 #include "Graphics/GraphicsApiException.h"
 
@@ -12,7 +13,7 @@ namespace {
     // Converts a string to lowercase and returns the corresponding GraphicsAPIType enum.
     // Throws std::invalid_argument if the API is not recognized.
     // -----------------------------------------------------------------------------
-    static GraphicsAPIType ParseGraphicsAPIType(const char *name) {
+    GraphicsAPIType ParseGraphicsAPIType(const char *name) {
         std::string lower{name};
         std::transform(
             lower.begin(), lower.end(), lower.begin(),
@@ -70,6 +71,14 @@ JELLY_API bool jellyEngineIsRunning(JellyEngineHandle handle) {
 JELLY_API void jellyEnginePoll(JellyEngineHandle handle) {
     auto engine = static_cast<JellyEngine *>(handle);
     engine->PollEvents();
+}
+
+// -----------------------------------------------------------------------------
+// Renders a single frame by beginning and ending the graphics API frame.
+// -----------------------------------------------------------------------------
+JELLY_API void jellyEngineRender(JellyEngineHandle handle) {
+    auto engine = static_cast<JellyEngine *>(handle);
+    engine->Render();
 }
 
 // -----------------------------------------------------------------------------

@@ -20,6 +20,7 @@ public static partial class JellyNative
         EngineInitialize   = GetDelegate<EngineCreateDelegate>("jellyEngineInitialize");
         EngineIsRunning    = GetDelegate<EngineIsRunningDelegate>("jellyEngineIsRunning");
         EnginePoll         = GetDelegate<EnginePollDelegate>("jellyEnginePoll");
+        EngineRender       = GetDelegate<EngineRenderDelegate>("jellyEngineRender");
         EngineShutdown     = GetDelegate<EngineShutdownDelegate>("jellyEngineShutdown");
     }
 
